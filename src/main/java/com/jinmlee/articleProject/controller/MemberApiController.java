@@ -1,15 +1,16 @@
 package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.AddMemberDto;
+import com.jinmlee.articleProject.dto.LoginMemberDto;
+import com.jinmlee.articleProject.dto.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +21,22 @@ public class MemberApiController {
     public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto){
         Member savedMember = memberService.save(addMemberDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
+    }
+
+    @PostMapping("/api/members/login")
+    public ResponseEntity<String> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
+        Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
+        if(findMember == null){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid login ID");
+        }
+
+        if(!memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword())){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid password");
+        }
+
+        SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());
+
+        session.setAttribute("loggedMember", loggedMember);
+        return ResponseEntity.ok().body(findMember.getName() + " login success");
     }
 }

@@ -1,7 +1,10 @@
 package com.jinmlee.articleProject.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.AddMemberDto;
+import com.jinmlee.articleProject.dto.LoginMemberDto;
+import com.jinmlee.articleProject.dto.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,6 +27,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -42,10 +47,13 @@ class MemberApiControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    private MockHttpSession session;
+
     @BeforeEach
     public void setMockMvc(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         memberRepository.deleteAll();
+        session = new MockHttpSession();
     }
 
 
@@ -76,5 +84,35 @@ class MemberApiControllerTest {
         assertThat(members.get(0).getPassword()).isEqualTo(password);
         assertThat(members.get(0).getPhoneNumber()).isEqualTo(phoneNumber);
         assertThat(members.get(0).getEmail()).isEqualTo(email);
+    }
+
+    @Test
+    public void loginTest() throws Exception {
+        final String url = "/api/members/login";
+        LoginMemberDto loginMemberDto = new LoginMemberDto("test1", "Test12345!@");
+//        MockHttpSession session = new MockHttpSession();
+        memberRepository.save(Member.builder()
+                        .name("강호동")
+                        .loginId("test1")
+                        .password("Test12345!@")
+                        .phoneNumber("010-1234-5678")
+                        .email("test1@test")
+                        .build());
+
+        final String requestBody = objectMapper.writeValueAsString(loginMemberDto);
+
+        ResultActions result = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+                .session(session));
+
+
+        result.andExpect(status().isOk())
+                .andExpect(content().string("강호동 login success"));
+
+        SessionMemberDto loggedMember = (SessionMemberDto) session.getAttribute("loggedMember");
+
+        assertThat(loggedMember).isNotNull();
+        assertThat(loggedMember.getName()).isEqualTo("강호동");
     }
 }
