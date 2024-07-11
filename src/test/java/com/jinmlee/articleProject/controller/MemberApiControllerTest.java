@@ -54,7 +54,7 @@ class MemberApiControllerTest {
     @CsvSource({
             "강호동, test1, Test12345!@, 010-1234-5678, test1@test",
             "유재석, test2, Test56789@#, 010-2345-6789, test2@test",
-            "이수근, test3, Test67543*&, 010-3456-7890, test3@test"
+            "이수근, test3, Test67543$%, 010-3456-7890, test3@test"
     })
     public void addMember(String name, String loginId, String password, String phoneNumber, String email) throws Exception{
         final String url = "/api/members";
