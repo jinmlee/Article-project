@@ -1,10 +1,12 @@
 package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.AddArticleDto;
+import com.jinmlee.articleProject.dto.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,5 +26,15 @@ public class ArticleService {
 
     public Optional<Article> findById(long id){
         return articleRepository.findById(id);
+    }
+
+    @Transactional
+    public Article update(long id, UpdateArticleDto updateArticleDto){
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not fount: " + id));
+
+        article.update(updateArticleDto.getTitle(), updateArticleDto.getContent());
+
+        return article;
     }
 }

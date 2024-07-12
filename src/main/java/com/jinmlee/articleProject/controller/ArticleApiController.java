@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.AddArticleDto;
 import com.jinmlee.articleProject.dto.ArticleResponse;
+import com.jinmlee.articleProject.dto.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,12 @@ public class ArticleApiController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok().body(new ArticleResponse(findArticle.get()));
+    }
+
+    @PutMapping("/api/articles/{id}")
+    public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleDto updateArticleDto){
+        Article updateArticle = articleService.update(id, updateArticleDto);
+
+        return ResponseEntity.ok().body(updateArticle);
     }
 }

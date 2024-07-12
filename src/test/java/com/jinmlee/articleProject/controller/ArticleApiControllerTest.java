@@ -1,7 +1,9 @@
 package com.jinmlee.articleProject.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.AddArticleDto;
+import com.jinmlee.articleProject.dto.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -108,6 +109,36 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(title))
                 .andExpect(jsonPath("$.content").value(content));
+    }
+
+    @DisplayName("게시글 업데이트 기능 성공 테스트")
+    @Test
+    public void updateArticle() throws Exception {
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+
+        Article savedArticle = articleRepository.save(Article.builder()
+                        .title(title)
+                        .content(content)
+                        .build());
+
+        final String newTile = "newTitle";
+        final String newContent = "newContent";
+
+        UpdateArticleDto updateArticleDto = new UpdateArticleDto(newTile, newContent);
+
+        ResultActions resultActions = mockMvc.perform(put(url, savedArticle.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateArticleDto)));
+
+        resultActions.andExpect(status().isOk());
+
+        Article article = articleRepository.findById(savedArticle.getId()).get();
+
+        assertThat(article.getTitle()).isEqualTo(newTile);
+        assertThat(article.getContent()).isEqualTo(newContent);
+
     }
 
 }

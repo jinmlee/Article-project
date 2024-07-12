@@ -1,5 +1,6 @@
 package com.jinmlee.articleProject.entity;
 
+import com.jinmlee.articleProject.dto.UpdateArticleDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,9 @@ public class Article extends BaseTimeEntity{
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }
