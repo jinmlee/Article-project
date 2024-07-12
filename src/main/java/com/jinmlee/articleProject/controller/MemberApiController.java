@@ -24,19 +24,19 @@ public class MemberApiController {
     }
 
     @PostMapping("/api/members/login")
-    public ResponseEntity<String> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
+    public ResponseEntity<Member> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
         Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
         if(findMember == null){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid login ID");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         if(!memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword())){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Invalid password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());
 
         session.setAttribute("loggedMember", loggedMember);
-        return ResponseEntity.ok().body(findMember.getName() + " login success");
+        return ResponseEntity.ok().body(findMember);
     }
 }

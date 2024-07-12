@@ -108,8 +108,6 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(title))
                 .andExpect(jsonPath("$.content").value(content));
-
-
     }
 
 }

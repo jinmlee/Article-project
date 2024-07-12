@@ -27,8 +27,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest
@@ -107,8 +106,7 @@ class MemberApiControllerTest {
                 .session(session));
 
 
-        result.andExpect(status().isOk())
-                .andExpect(content().string("강호동 login success"));
+        result.andExpect(status().isOk());
 
         SessionMemberDto loggedMember = (SessionMemberDto) session.getAttribute("loggedMember");
 
