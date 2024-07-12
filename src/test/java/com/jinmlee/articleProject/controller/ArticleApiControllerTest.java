@@ -69,7 +69,7 @@ class ArticleApiControllerTest {
         assertThat(articles.get(0).getContent()).isEqualTo(content);
     }
 
-    @DisplayName("개시판 글 목록 전체 조회 기능 테스트")
+    @DisplayName("개시판 글 목록 전체 조회 성공 테스트")
     @Test
     public void findAllArticle() throws Exception {
         final String url = "/api/articles";
@@ -88,6 +88,28 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].content").value(content))
                 .andExpect(jsonPath("$[0].title").value(title));
+    }
+
+    @DisplayName("게시글 조회 성공 테스트")
+    @Test
+    public void findArticle() throws Exception {
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+
+        Article savedArticle = articleRepository.save(Article.builder()
+                .content(content)
+                .title(title)
+                .build());
+
+        ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
+
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(title))
+                .andExpect(jsonPath("$.content").value(content));
+
+
     }
 
 }
