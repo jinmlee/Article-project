@@ -19,8 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -45,7 +46,7 @@ class ArticleApiControllerTest {
         articleRepository.deleteAll();
     }
 
-    @DisplayName("블로그 글 추가 성공 테스트")
+    @DisplayName("게시판 글 추가 성공 테스트")
     @Test
     public void addArticle() throws Exception{
         final String url = "/api/articles";
@@ -68,5 +69,25 @@ class ArticleApiControllerTest {
         assertThat(articles.get(0).getContent()).isEqualTo(content);
     }
 
+    @DisplayName("개시판 글 목록 전체 조회 기능 테스트")
+    @Test
+    public void findAllArticle() throws Exception {
+        final String url = "/api/articles";
+        final String title = "title";
+        final String content = "content";
+
+        articleRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        final ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON));
+
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value(content))
+                .andExpect(jsonPath("$[0].title").value(title));
+    }
 
 }
