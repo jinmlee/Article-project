@@ -1,10 +1,9 @@
 package com.jinmlee.articleProject.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jinmlee.articleProject.dto.AddMemberDto;
-import com.jinmlee.articleProject.dto.LoginMemberDto;
-import com.jinmlee.articleProject.dto.SessionMemberDto;
+import com.jinmlee.articleProject.dto.member.AddMemberDto;
+import com.jinmlee.articleProject.dto.member.LoginMemberDto;
+import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

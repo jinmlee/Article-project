@@ -1,9 +1,8 @@
 package com.jinmlee.articleProject.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jinmlee.articleProject.dto.AddArticleDto;
-import com.jinmlee.articleProject.dto.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,5 @@
 package com.jinmlee.articleProject.entity;
 
-import com.jinmlee.articleProject.dto.UpdateArticleDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

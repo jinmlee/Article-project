@@ -1,4 +1,4 @@
-package com.jinmlee.articleProject.dto;
+package com.jinmlee.articleProject.dto.article;
 
 import com.jinmlee.articleProject.entity.Article;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleResponse {
+public class AddArticleDto {
+
     private String title;
     private String content;
-    public ArticleResponse(Article article){
-        this.title = article.getTitle();
-        this.content = article.getContent();
+
+    public Article toEntity(){
+        return Article.builder()
+                .title(title)
+                .content(content)
+                .build();
     }
+
 }

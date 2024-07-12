@@ -1,4 +1,4 @@
-package com.jinmlee.articleProject.dto;
+package com.jinmlee.articleProject.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateArticleDto {
-    private String title;
-    private String content;
+public class LoginMemberDto {
+    private String loginId;
+    private String password;
 }

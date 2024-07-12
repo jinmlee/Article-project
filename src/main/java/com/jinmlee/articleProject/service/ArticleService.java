@@ -1,7 +1,7 @@
 package com.jinmlee.articleProject.service;
 
-import com.jinmlee.articleProject.dto.AddArticleDto;
-import com.jinmlee.articleProject.dto.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;

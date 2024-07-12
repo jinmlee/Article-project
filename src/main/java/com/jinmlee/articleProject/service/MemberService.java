@@ -1,13 +1,10 @@
 package com.jinmlee.articleProject.service;
 
-import com.jinmlee.articleProject.dto.AddMemberDto;
-import com.jinmlee.articleProject.dto.LoginMemberDto;
+import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

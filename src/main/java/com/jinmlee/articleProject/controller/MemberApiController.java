@@ -1,8 +1,8 @@
 package com.jinmlee.articleProject.controller;
 
-import com.jinmlee.articleProject.dto.AddMemberDto;
-import com.jinmlee.articleProject.dto.LoginMemberDto;
-import com.jinmlee.articleProject.dto.SessionMemberDto;
+import com.jinmlee.articleProject.dto.member.AddMemberDto;
+import com.jinmlee.articleProject.dto.member.LoginMemberDto;
+import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.service.MemberService;
 import jakarta.servlet.http.HttpSession;

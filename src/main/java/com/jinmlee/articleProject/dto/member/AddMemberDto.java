@@ -1,4 +1,4 @@
-package com.jinmlee.articleProject.dto;
+package com.jinmlee.articleProject.dto.member;
 
 import com.jinmlee.articleProject.entity.Member;
 import jakarta.validation.constraints.*;
