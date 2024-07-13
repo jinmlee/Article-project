@@ -140,4 +140,22 @@ class ArticleApiControllerTest {
 
     }
 
+    @DisplayName("게시글 수정기한이 남은 테스트")
+    @Test
+    public void editAble() throws Exception {
+        final String url = "/api/articles/{id}/editable";
+        final String title = "title";
+        final String content = "content";
+
+        Article savedArticle = articleRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build());
+
+        ResultActions resultActions = mockMvc.perform(get(url, savedArticle.getId()));
+
+        resultActions
+                .andExpect(status().isOk());
+    }
+
 }

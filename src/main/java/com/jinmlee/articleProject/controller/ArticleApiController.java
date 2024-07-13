@@ -47,4 +47,12 @@ public class ArticleApiController {
 
         return ResponseEntity.ok().body(updateArticle);
     }
+
+    @GetMapping("/api/articles/{id}/editable")
+    public ResponseEntity<?> checkEditable(@PathVariable long id){
+        if(!articleService.isEditable(id)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("게시글 작성 이후 10일이 경과하였습니다.");
+        }
+        return ResponseEntity.ok().body(id + " 수정 가능한 게시글입니다.");
+    }
 }
