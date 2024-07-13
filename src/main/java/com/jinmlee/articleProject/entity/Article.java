@@ -23,6 +23,10 @@ public class Article extends BaseTimeEntity{
     @Column(name = "content", nullable = false)
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
     public void update(String title, String content){
         this.title = title;
         this.content = content;

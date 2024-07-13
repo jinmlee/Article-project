@@ -3,8 +3,10 @@ package com.jinmlee.articleProject.controller;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.ArticleResponse;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.service.ArticleService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,9 @@ public class ArticleApiController {
     private final ArticleService articleService;
 
     @PostMapping("/api/articles")
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleDto addArticleDto){
-        Article savedArticle = articleService.save(addArticleDto);
+    public ResponseEntity<Article> addArticle(@RequestBody AddArticleDto addArticleDto, HttpSession httpSession){
+        SessionMemberDto loggedMember =(SessionMemberDto)httpSession.getAttribute("loggedMember");
+        Article savedArticle = articleService.save(addArticleDto, loggedMember.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
 
