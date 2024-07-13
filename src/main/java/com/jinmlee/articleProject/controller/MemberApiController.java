@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +19,7 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/api/members")
-    public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto){
+    public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto, BindingResult bindingResult){
         Member savedMember = memberService.save(addMemberDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
     }
