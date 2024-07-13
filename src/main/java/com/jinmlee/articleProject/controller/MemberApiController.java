@@ -36,14 +36,14 @@ public class MemberApiController {
     }
 
     @PostMapping("/api/members/login")
-    public ResponseEntity<Member> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
+    public ResponseEntity<?> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
         Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
         if(findMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디를 확인해 주세요");
         }
 
         if(!memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword())){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호를 확인해주세요");
         }
 
         SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());

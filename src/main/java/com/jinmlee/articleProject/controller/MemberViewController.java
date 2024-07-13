@@ -13,4 +13,9 @@ public class MemberViewController {
     public String joinMember(){
         return "member/join";
     }
+
+    @GetMapping("/member/login")
+    public String login(){
+        return "member/login";
+    }
 }
