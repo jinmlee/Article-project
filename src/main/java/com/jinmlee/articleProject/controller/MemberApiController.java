@@ -11,7 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +23,14 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/api/members")
-    public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto, BindingResult bindingResult){
+    public ResponseEntity<?> addMember(@Valid @RequestBody AddMemberDto addMemberDto, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            for(FieldError error : bindingResult.getFieldErrors()){
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
         Member savedMember = memberService.save(addMemberDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
     }
