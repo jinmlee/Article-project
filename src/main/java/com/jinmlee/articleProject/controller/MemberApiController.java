@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
+import com.jinmlee.articleProject.dto.member.MemberResponse;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.service.MemberService;
@@ -23,27 +24,22 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/api/members")
-    public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto){
+    public ResponseEntity<MemberResponse> addMember(@Valid @RequestBody AddMemberDto addMemberDto){
 
         Member savedMember = memberService.save(addMemberDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MemberResponse(savedMember));
     }
 
     @PostMapping("/api/members/login")
-    public ResponseEntity<?> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
-        Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
-        if(findMember == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디를 확인해 주세요");
-        }
+    public ResponseEntity<MemberResponse> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
 
-        if(!memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword())){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호를 확인해주세요");
-        }
+        Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
+        memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword());
 
         SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());
-
         session.setAttribute("loggedMember", loggedMember);
-        return ResponseEntity.ok().body(findMember);
+
+        return ResponseEntity.ok().body(new MemberResponse(findMember));
     }
 }
