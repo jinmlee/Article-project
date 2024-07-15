@@ -23,15 +23,10 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/api/members")
-    public ResponseEntity<?> addMember(@Valid @RequestBody AddMemberDto addMemberDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            Map<String, String> errors = new HashMap<>();
-            for(FieldError error : bindingResult.getFieldErrors()){
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-        }
+    public ResponseEntity<Member> addMember(@Valid @RequestBody AddMemberDto addMemberDto){
+
         Member savedMember = memberService.save(addMemberDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedMember);
     }
 
