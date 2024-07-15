@@ -35,8 +35,8 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Optional<Article> findById(long id){
-        return articleRepository.findById(id);
+    public Article findById(long id){
+        return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
     }
 
     @Transactional

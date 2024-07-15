@@ -37,11 +37,8 @@ public class ArticleApiController {
 
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id){
-        Optional<Article> findArticle = articleService.findById(id);
-        if(findArticle.isEmpty()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.ok().body(new ArticleResponse(findArticle.get()));
+        Article findArticle = articleService.findById(id);
+        return ResponseEntity.ok().body(new ArticleResponse(findArticle));
     }
 
     @PutMapping("/api/articles/{id}")
