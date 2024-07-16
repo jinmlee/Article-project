@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ public class ArticleApiController {
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleResponse>> findAllArticle(){
 
-        List<ArticleResponse> findArticleList = articleService.findAll().stream()
+        List<ArticleResponse> findArticleList = articleService.getList().stream()
                 .map(ArticleResponse::new).toList();
 
         return ResponseEntity.ok().body(findArticleList);
@@ -43,7 +42,7 @@ public class ArticleApiController {
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id){
 
-        Article findArticle = articleService.findById(id);
+        Article findArticle = articleService.getById(id);
 
         return ResponseEntity.ok().body(new ArticleResponse(findArticle));
     }
@@ -59,7 +58,7 @@ public class ArticleApiController {
     @GetMapping("/api/articles/{id}/editable")
     public ResponseEntity<ArticleResponse> checkEditable(@PathVariable long id){
 
-        Article article = articleService.findById(id);
+        Article article = articleService.getById(id);
 
         articleService.isEditable(article);
 

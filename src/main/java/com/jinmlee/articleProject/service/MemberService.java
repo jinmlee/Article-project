@@ -19,7 +19,7 @@ public class MemberService {
         return memberRepository.save(addMemberDto.toEntity());
     }
 
-    public Member findByLoginId(String loginId){
+    public Member getMemberByLoginId(String loginId){
         Optional<Member> findMember = memberRepository.findByLoginId(loginId);
         if(findMember.isEmpty()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"아이디를 확인해 주세요");

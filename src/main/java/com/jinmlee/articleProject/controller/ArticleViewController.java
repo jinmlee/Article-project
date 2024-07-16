@@ -3,7 +3,6 @@ package com.jinmlee.articleProject.controller;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class ArticleViewController {
         if(id == null){
             model.addAttribute("article", new ArticleViewDto());
         }else {
-            Article article = articleService.findById(id);
+            Article article = articleService.getById(id);
             model.addAttribute("article", new ArticleViewDto(article, loggedMember));
         }
 

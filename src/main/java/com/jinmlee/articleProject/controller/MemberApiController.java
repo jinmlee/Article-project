@@ -11,12 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +29,7 @@ public class MemberApiController {
     @PostMapping("/api/members/login")
     public ResponseEntity<MemberResponse> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
 
-        Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
+        Member findMember = memberService.getMemberByLoginId(loginMemberDto.getLoginId());
         memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword());
 
         SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());

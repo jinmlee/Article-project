@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +30,11 @@ public class ArticleService {
                 .member(loggedMember).build());
     }
 
-    public List<Article> findAll(){
+    public List<Article> getList(){
         return articleRepository.findAll();
     }
 
-    public Article findById(long id){
+    public Article getById(long id){
         return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
     }
 
