@@ -37,4 +37,12 @@ public class MemberApiController {
 
         return ResponseEntity.ok().body(new MemberResponse(findMember));
     }
+
+    @PostMapping("/api/members/logout")
+    public ResponseEntity<String> logout(HttpSession session){
+
+        session.invalidate();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("로그아웃 하였습니다.");
+    }
 }
