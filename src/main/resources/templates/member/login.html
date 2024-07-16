@@ -52,7 +52,7 @@
             return response.text();
         }).then(() => {
             alert("로그인에 성공하였습니다.")
-            location.replace("/")
+            location.replace("/articleList")
         }).catch(errorMessage => {
             alert(errorMessage)
         })
