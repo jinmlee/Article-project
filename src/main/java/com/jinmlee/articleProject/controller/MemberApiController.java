@@ -11,12 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,12 +29,20 @@ public class MemberApiController {
     @PostMapping("/api/members/login")
     public ResponseEntity<MemberResponse> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
 
-        Member findMember = memberService.findByLoginId(loginMemberDto.getLoginId());
+        Member findMember = memberService.getMemberByLoginId(loginMemberDto.getLoginId());
         memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword());
 
         SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());
         session.setAttribute("loggedMember", loggedMember);
 
         return ResponseEntity.ok().body(new MemberResponse(findMember));
+    }
+
+    @PostMapping("/api/members/logout")
+    public ResponseEntity<String> logout(HttpSession session){
+
+        session.invalidate();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("로그아웃 하였습니다.");
     }
 }

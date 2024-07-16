@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dateTime = document.getElementById('date-time');
+            const utcString = dateTime.getAttribute('data-utc')
+            dateTime.textContent = formatDateTime(utcString);
+        })
+
+        function formatDateTime(utcString) {
+            const date = new Date(utcString);
+            return date.toLocaleString(undefined, {
+                year: "2-digit",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+            })
+        }
+    </script>
+
+</head>
+<body>
+<div th:replace="~{fragment/header :: header}"></div>
+
+<div class="container">
+
+    <div class="m-2 d-flex justify-content-center">
+        <div class="w-75">
+            <div class="border-bottom">
+                <input type="hidden" th:value="${article.id}" id="id">
+                <div class="fs-2 mb-1" th:text="${article.title}"></div>
+                <div class="mb-1" th:text="${article.memberName}"></div>
+                <div class="mb-1 row d-flex align-items-center">
+                    <div class="col-auto text-black-50" th:attr="data-utc=${article.createdDate}" id="date-time"></div>
+                    <div class="col" th:if="${loggedMember != null && article.memberId == loggedMember.id}">
+                        <div class="row d-flex align-items-center">
+                            <div class="col" th:text="'수정 가능 기간 ' + ${article.modifyLimitedDate} + ' 일'"></div>
+                            <button class="col-1 btn btn-outline-dark ms-auto" id="modify-btn">수정</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div th:text="${article.content}"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script th:src="@{/js/logout.js}"></script>
+
+<script>
+    document.getElementById('modify-btn').addEventListener('click', event => {
+        const articleId = document.getElementById('id').value;
+        fetch(`api/articles/${articleId}/editable`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            if(!response.ok){
+                return response.text().then(errorMessage => {
+                    throw errorMessage;
+                })
+            }
+            return response.json();
+        }).then(() => {
+            location.replace(`/newArticle?id=${articleId}`)
+        }).catch(errorMessage => {
+            alert(errorMessage)
+        })
+    })
+
+</script>
+</body>
+</html>

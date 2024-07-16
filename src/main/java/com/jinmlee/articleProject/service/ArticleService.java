@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +30,11 @@ public class ArticleService {
                 .member(loggedMember).build());
     }
 
-    public List<Article> findAll(){
+    public List<Article> getList(){
         return articleRepository.findAll();
     }
 
-    public Article findById(long id){
+    public Article getById(long id){
         return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
     }
 
@@ -58,5 +56,17 @@ public class ArticleService {
         if(ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow) > 10) {
             throw new IllegalArgumentException("수정 가능 기한이 지났습니다.");
         }
+    }
+
+    public long getModifyLimitedDate(Article article){
+
+        Instant timeNow = Instant.now();
+
+        long limitedDate = 10 - ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow);
+        if(limitedDate <= 0){
+            return 0;
+        }
+
+        return limitedDate;
     }
 }

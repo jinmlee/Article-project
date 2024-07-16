@@ -5,6 +5,7 @@ import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,11 +45,15 @@ class MemberApiControllerTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    private ArticleRepository articleRepository;
+
     private MockHttpSession session;
 
     @BeforeEach
     public void setMockMvc(){
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        articleRepository.deleteAll();
         memberRepository.deleteAll();
         session = new MockHttpSession();
     }
