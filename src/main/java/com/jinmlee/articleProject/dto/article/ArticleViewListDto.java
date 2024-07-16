@@ -10,14 +10,14 @@ import java.time.Instant;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleListDto {
+public class ArticleViewListDto {
 
     private long id;
     private String title;
     private String memberName;
     private Instant createdDate;
 
-    public ArticleListDto(Article article){
+    public ArticleViewListDto(Article article){
         this.id = article.getId();
         this.title = article.getTitle();
         this.memberName = article.getMember().getName();

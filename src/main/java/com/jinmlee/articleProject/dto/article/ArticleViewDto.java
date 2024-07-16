@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,12 +18,16 @@ public class ArticleViewDto {
     private String content;
     private long memberId;
     private String memberName;
+    private Instant createdDate;
+    private long modifyLimitedDate;
 
-    public ArticleViewDto(Article article){
+    public ArticleViewDto(Article article, long modifyLimitedDate){
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.memberId = article.getMember().getId();
         this.memberName = article.getMember().getName();
+        this.createdDate = article.getCreatedDate();
+        this.modifyLimitedDate = modifyLimitedDate;
     }
 }

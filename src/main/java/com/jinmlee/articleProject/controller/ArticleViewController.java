@@ -1,6 +1,7 @@
 package com.jinmlee.articleProject.controller;
 
-import com.jinmlee.articleProject.dto.article.ArticleListDto;
+import com.jinmlee.articleProject.dto.article.AddArticleViewDto;
+import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -29,10 +31,10 @@ public class ArticleViewController {
         }
 
         if(id == null){
-            model.addAttribute("article", new ArticleViewDto());
+            model.addAttribute("article", new AddArticleViewDto());
         }else {
             Article article = articleService.getById(id);
-            model.addAttribute("article", new ArticleViewDto(article));
+            model.addAttribute("article", new AddArticleViewDto(article));
         }
 
         return "article/newArticle";
@@ -41,10 +43,22 @@ public class ArticleViewController {
     @GetMapping("/articleList")
     public String viewArticleList(Model model){
 
-        List<ArticleListDto> articleList = articleService.getList().stream().map(ArticleListDto:: new).toList();
+        List<ArticleViewListDto> articleList = articleService.getList().stream().map(ArticleViewListDto:: new).toList();
         model.addAttribute("articleList", articleList);
 
         return "article/articleList";
+    }
+
+    @GetMapping("/article{id}")
+    public String viewArticle(@PathVariable long id, Model model){
+
+        Article article = articleService.getById(id);
+
+        long modifyLimitedDate = articleService.getModifyLimitedDate(article);
+
+        model.addAttribute("article", new ArticleViewDto(article, modifyLimitedDate));
+
+        return "article/article";
     }
 
 }
