@@ -6,6 +6,8 @@ import com.jinmlee.articleProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -16,10 +18,16 @@ public class MemberService {
     }
 
     public Member findByLoginId(String loginId){
-        return memberRepository.findByLoginId(loginId);
+        Optional<Member> findMember = memberRepository.findByLoginId(loginId);
+        if(findMember.isEmpty()){
+            throw new IllegalArgumentException("아이디를 확인해 주세요");
+        }
+        return findMember.get();
     }
 
-    public boolean verifyPassword(String inputPassword, String getPassword){
-        return inputPassword.equals(getPassword);
+    public void verifyPassword(String inputPassword, String getPassword){
+        if(!inputPassword.equals(getPassword)){
+            throw new IllegalArgumentException("비밀번호를 확인해 주세요");
+        }
     }
 }

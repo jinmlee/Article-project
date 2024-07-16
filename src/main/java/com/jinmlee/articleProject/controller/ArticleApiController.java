@@ -22,37 +22,47 @@ public class ArticleApiController {
     private final ArticleService articleService;
 
     @PostMapping("/api/articles")
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleDto addArticleDto, HttpSession httpSession){
+    public ResponseEntity<ArticleResponse> addArticle(@RequestBody AddArticleDto addArticleDto, HttpSession httpSession){
+
         SessionMemberDto loggedMember =(SessionMemberDto)httpSession.getAttribute("loggedMember");
+
         Article savedArticle = articleService.save(addArticleDto, loggedMember.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ArticleResponse(savedArticle));
     }
 
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleResponse>> findAllArticle(){
+
         List<ArticleResponse> findArticleList = articleService.findAll().stream()
                 .map(ArticleResponse::new).toList();
+
         return ResponseEntity.ok().body(findArticleList);
     }
 
     @GetMapping("/api/articles/{id}")
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id){
+
         Article findArticle = articleService.findById(id);
+
         return ResponseEntity.ok().body(new ArticleResponse(findArticle));
     }
 
     @PutMapping("/api/articles/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable long id, @RequestBody UpdateArticleDto updateArticleDto){
+    public ResponseEntity<ArticleResponse> updateArticle(@PathVariable long id, @RequestBody UpdateArticleDto updateArticleDto){
+
         Article updateArticle = articleService.update(id, updateArticleDto);
 
-        return ResponseEntity.ok().body(updateArticle);
+        return ResponseEntity.ok().body(new ArticleResponse(updateArticle));
     }
 
     @GetMapping("/api/articles/{id}/editable")
-    public ResponseEntity<?> checkEditable(@PathVariable long id){
-        if(!articleService.isEditable(id)){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("게시글 작성 이후 10일이 경과하였습니다.");
-        }
-        return ResponseEntity.ok().body(id + " 수정 가능한 게시글입니다.");
+    public ResponseEntity<ArticleResponse> checkEditable(@PathVariable long id){
+
+        Article article = articleService.findById(id);
+
+        articleService.isEditable(article);
+
+        return ResponseEntity.ok().body(new ArticleResponse(article));
     }
 }

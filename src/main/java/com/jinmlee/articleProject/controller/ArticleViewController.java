@@ -20,16 +20,19 @@ public class ArticleViewController {
 
     @GetMapping("/newArticle")
     public String newArticle(@RequestParam(required = false) Long id, Model model, HttpSession httpSession){
+
         SessionMemberDto loggedMember = (SessionMemberDto) httpSession.getAttribute("loggedMember");
         if(loggedMember == null){
             return "redirect:/member/login";
         }
+
         if(id == null){
             model.addAttribute("article", new ArticleViewDto());
         }else {
             Article article = articleService.findById(id);
             model.addAttribute("article", new ArticleViewDto(article, loggedMember));
         }
+
         return "article/newArticle";
     }
 

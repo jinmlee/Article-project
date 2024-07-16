@@ -25,6 +25,7 @@ public class ArticleService {
     public Article save(AddArticleDto addArticleDto, long loggedId){
 
         Member loggedMember = memberRepository.findById(loggedId).orElseThrow(() -> new IllegalArgumentException("not found member: " + loggedId));
+
         return articleRepository.save(Article.builder()
                 .title(addArticleDto.getTitle())
                 .content(addArticleDto.getContent())
@@ -41,6 +42,7 @@ public class ArticleService {
 
     @Transactional
     public Article update(long id, UpdateArticleDto updateArticleDto){
+
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
@@ -49,9 +51,12 @@ public class ArticleService {
         return article;
     }
 
-    public boolean isEditable(long id){
-        Article article = articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+    public void isEditable(Article article){
+
         Instant timeNow = Instant.now();
-        return ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow) <= 10;
+
+        if(ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow) > 10) {
+            throw new IllegalArgumentException("수정 가능 기한이 지났습니다.");
+        }
     }
 }
