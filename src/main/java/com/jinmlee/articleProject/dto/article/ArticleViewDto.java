@@ -21,13 +21,13 @@ public class ArticleViewDto {
     private Instant createdDate;
     private long modifyLimitedDate;
 
-    public ArticleViewDto(Article article, long modifyLimitedDate){
+    public ArticleViewDto(Article article){
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
         this.memberId = article.getMember().getId();
         this.memberName = article.getMember().getName();
         this.createdDate = article.getCreatedDate();
-        this.modifyLimitedDate = modifyLimitedDate;
+        this.modifyLimitedDate = article.getModifyLimitedDate();
     }
 }

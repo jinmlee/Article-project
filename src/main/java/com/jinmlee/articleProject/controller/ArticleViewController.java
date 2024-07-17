@@ -54,9 +54,7 @@ public class ArticleViewController {
 
         Article article = articleService.getById(id);
 
-        long modifyLimitedDate = articleService.getModifyLimitedDate(article);
-
-        model.addAttribute("article", new ArticleViewDto(article, modifyLimitedDate));
+        model.addAttribute("article", new ArticleViewDto(article));
 
         return "article/article";
     }
