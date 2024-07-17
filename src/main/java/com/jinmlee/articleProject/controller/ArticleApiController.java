@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -60,7 +61,9 @@ public class ArticleApiController {
 
         Article article = articleService.getById(id);
 
-        articleService.isEditable(article);
+        if(!article.isEditable()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
 
         return ResponseEntity.ok().body(new ArticleResponse(article));
     }

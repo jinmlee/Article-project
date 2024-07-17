@@ -46,4 +46,11 @@ public class Article extends BaseTimeEntity{
 
         return limitedDate;
     }
+
+    public boolean isEditable(){
+
+        Instant timeNow = Instant.now();
+
+        return ChronoUnit.DAYS.between(getCreatedDate(), timeNow) <= 10;
+    }
 }
