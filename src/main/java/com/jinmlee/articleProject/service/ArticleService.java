@@ -48,25 +48,4 @@ public class ArticleService {
 
         return article;
     }
-
-    public void isEditable(Article article){
-
-        Instant timeNow = Instant.now();
-
-        if(ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow) > 10) {
-            throw new IllegalArgumentException("수정 가능 기한이 지났습니다.");
-        }
-    }
-
-    public long getModifyLimitedDate(Article article){
-
-        Instant timeNow = Instant.now();
-
-        long limitedDate = 10 - ChronoUnit.DAYS.between(article.getCreatedDate(), timeNow);
-        if(limitedDate <= 0){
-            return 0;
-        }
-
-        return limitedDate;
-    }
 }
