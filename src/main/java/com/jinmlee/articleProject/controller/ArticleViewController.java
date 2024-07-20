@@ -25,11 +25,6 @@ public class ArticleViewController {
     @GetMapping("/newArticle")
     public String newArticle(@RequestParam(required = false) Long id, Model model, HttpSession httpSession){
 
-        SessionMemberDto loggedMember = (SessionMemberDto) httpSession.getAttribute("loggedMember");
-        if(loggedMember == null){
-            return "redirect:/member/login";
-        }
-
         if(id == null){
             model.addAttribute("article", new AddArticleViewDto());
         }else {
