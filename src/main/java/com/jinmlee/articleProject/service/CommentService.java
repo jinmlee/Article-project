@@ -19,4 +19,15 @@ public class CommentService {
         return commentRepository.save(addCommentDto.toEntity(article, member));
 
     }
+
+    public void delete(long id){
+        commentRepository.deleteById(id);
+    }
+
+    public boolean isAuthor(Member member, long commentId){
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("not found comment : " + commentId));
+
+        return comment.getMember().equals(member);
+    }
 }

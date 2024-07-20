@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +32,15 @@ public class CommentApiController {
         Comment savedComment = commentService.save(addCommentDto, article, customUserDetails.getMember());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommentResponse(savedComment));
+    }
+
+    @DeleteMapping("/api/article/{articleId}/comments/{id}")
+    public ResponseEntity<String> deleteComment(@PathVariable long articleId, @PathVariable long id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        commentService.isAuthor(customUserDetails.getMember(), id);
+
+        commentService.delete(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("삭제가 완료되었습니다.");
     }
 }
