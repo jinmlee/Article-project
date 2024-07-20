@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +24,7 @@ public class ArticleApiController {
     private final ArticleService articleService;
 
     @PostMapping("/api/articles")
-    public ResponseEntity<ArticleResponse> addArticle(@RequestBody AddArticleDto addArticleDto, CustomUserDetails customUserDetails){
+    public ResponseEntity<ArticleResponse> addArticle(@RequestBody AddArticleDto addArticleDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         Article savedArticle = articleService.save(addArticleDto, customUserDetails.getMember());
 
