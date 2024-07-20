@@ -20,14 +20,12 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
 
-    public Article save(AddArticleDto addArticleDto, long loggedId){
-
-        Member loggedMember = memberRepository.findById(loggedId).orElseThrow(() -> new IllegalArgumentException("not found member: " + loggedId));
+    public Article save(AddArticleDto addArticleDto, Member member){
 
         return articleRepository.save(Article.builder()
                 .title(addArticleDto.getTitle())
                 .content(addArticleDto.getContent())
-                .member(loggedMember).build());
+                .member(member).build());
     }
 
     public List<Article> getList(){

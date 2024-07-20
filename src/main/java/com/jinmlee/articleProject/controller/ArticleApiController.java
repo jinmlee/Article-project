@@ -3,6 +3,7 @@ package com.jinmlee.articleProject.controller;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.ArticleResponse;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.service.ArticleService;
@@ -22,11 +23,9 @@ public class ArticleApiController {
     private final ArticleService articleService;
 
     @PostMapping("/api/articles")
-    public ResponseEntity<ArticleResponse> addArticle(@RequestBody AddArticleDto addArticleDto, HttpSession httpSession){
+    public ResponseEntity<ArticleResponse> addArticle(@RequestBody AddArticleDto addArticleDto, CustomUserDetails customUserDetails){
 
-        SessionMemberDto loggedMember =(SessionMemberDto)httpSession.getAttribute("loggedMember");
-
-        Article savedArticle = articleService.save(addArticleDto, loggedMember.getId());
+        Article savedArticle = articleService.save(addArticleDto, customUserDetails.getMember());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ArticleResponse(savedArticle));
     }
