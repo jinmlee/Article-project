@@ -10,15 +10,16 @@
 <div th:replace="~{fragment/header :: header}"></div>
 
 <div class="container">
-    <main class="form-signin w-25 m-auto">
+    <form method="post" th:action="@{/api/members/login}" name="loginForm">
+        <main class="form-signin w-25 m-auto">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
             <div class="form-floating m-2">
-                <input type="text" class="form-control" id="loginId" placeholder="loginId">
+                <input type="text" class="form-control" id="loginId" name="loginId" placeholder="loginId">
                 <label for="loginId">Email address</label>
             </div>
             <div class="form-floating m-2">
-                <input type="password" class="form-control" id="password" placeholder="Password">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                 <label for="password">Password</label>
             </div>
 
@@ -26,37 +27,8 @@
                 <button class="btn btn-primary w-50 py-2" id="loginButton" type="submit">Sign in</button>
             </div>
             <p class="mt-5 mb-3 text-body-secondary">© 2017–2024</p>
-    </main>
+        </main>
+    </form>
 </div>
 </body>
-
-<script>
-    const loginButton = document.getElementById('loginButton');
-
-    loginButton.addEventListener('click', event => {
-        fetch("/api/members/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                loginId: document.getElementById('loginId').value,
-                password: document.getElementById('password').value
-            })
-        }).then(response=>{
-            if(!response.ok){
-                return response.text().then(errorMessage => {
-                    throw errorMessage;
-                })
-            }
-            return response.text();
-        }).then(() => {
-            alert("로그인에 성공하였습니다.")
-            location.replace("/articleList")
-        }).catch(errorMessage => {
-            alert(errorMessage)
-        })
-    })
-
-</script>
 </html>

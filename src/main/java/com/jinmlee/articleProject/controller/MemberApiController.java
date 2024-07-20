@@ -26,18 +26,6 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new MemberResponse(savedMember));
     }
 
-    @PostMapping("/api/members/login")
-    public ResponseEntity<MemberResponse> login(@RequestBody LoginMemberDto loginMemberDto, HttpSession session){
-
-        Member findMember = memberService.getMemberByLoginId(loginMemberDto.getLoginId());
-        memberService.verifyPassword(loginMemberDto.getPassword(), findMember.getPassword());
-
-        SessionMemberDto loggedMember = new SessionMemberDto(findMember.getId(), findMember.getName());
-        session.setAttribute("loggedMember", loggedMember);
-
-        return ResponseEntity.ok().body(new MemberResponse(findMember));
-    }
-
     @PostMapping("/api/members/logout")
     public ResponseEntity<String> logout(HttpSession session){
 
