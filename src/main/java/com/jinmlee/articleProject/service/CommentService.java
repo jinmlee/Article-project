@@ -4,6 +4,7 @@ import com.jinmlee.articleProject.dto.comment.AddCommentDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.entity.comment.Comment;
+import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,11 @@ public class CommentService {
     }
 
     public boolean isAuthor(Member member, long commentId){
-
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("not found comment : " + commentId));
+
+        if(member.getRole() == Role.ADMIN){
+            return true;
+        }
 
         return comment.getMember().equals(member);
     }

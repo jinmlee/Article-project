@@ -24,8 +24,8 @@ public class CommentApiController {
     private final CommentService commentService;
     private final ArticleService articleService;
 
-    @PostMapping("/api/article/{id}/comments")
-    public ResponseEntity<CommentResponse> addComment(@PathVariable(name = "id") long articleId, @RequestBody AddCommentDto addCommentDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    @PostMapping("/api/article/{articleId}/comments")
+    public ResponseEntity<CommentResponse> addComment(@PathVariable long articleId, @RequestBody AddCommentDto addCommentDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         Article article = articleService.getById(articleId);
 
@@ -34,12 +34,12 @@ public class CommentApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new CommentResponse(savedComment));
     }
 
-    @DeleteMapping("/api/article/{articleId}/comments/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable long articleId, @PathVariable long id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    @DeleteMapping("/api/article/{articleId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable long articleId, @PathVariable long commentId, @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
-        commentService.isAuthor(customUserDetails.getMember(), id);
+        commentService.isAuthor(customUserDetails.getMember(), commentId);
 
-        commentService.delete(id);
+        commentService.delete(commentId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("삭제가 완료되었습니다.");
     }
