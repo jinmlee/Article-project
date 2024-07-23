@@ -26,6 +26,9 @@ public class Article extends BaseTimeEntity{
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "hits")
+    private long hits;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;

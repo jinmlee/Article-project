@@ -4,19 +4,15 @@ import com.jinmlee.articleProject.dto.article.AddArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
-import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -28,7 +24,7 @@ public class ArticleViewController {
     private final ArticleService articleService;
 
     @GetMapping("/newArticle")
-    public String newArticle(@RequestParam(required = false) Long id, Model model, HttpSession httpSession){
+    public String newArticle(@RequestParam(required = false) Long id, Model model){
 
         if(id == null){
             model.addAttribute("article", new AddArticleViewDto());
