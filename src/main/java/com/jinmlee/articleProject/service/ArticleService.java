@@ -1,12 +1,18 @@
 package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +34,28 @@ public class ArticleService {
                 .member(member).build());
     }
 
-    public List<Article> getList(){
-        return articleRepository.findAll();
+    public Page<Article> getList(int page, ArticleSortType sortType, ArticlePageDto pageDto){
+
+        page = isValidPage(page, pageDto.getPageSize());
+
+        Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
+        Pageable pageable = PageRequest.of(page - 1, pageDto.getPageSize(), sort);
+
+        Page<Article> sortedArticle = articleRepository.findAll(pageable);
+        pageDto.updateDto(sortedArticle);
+
+        return sortedArticle;
+    }
+
+    public int isValidPage(int page, int pageSize){
+        long totalArticles = articleRepository.count();
+        int totalPages = (int)((totalArticles + pageSize - 1) / pageSize);
+        if(page > totalPages){
+            return totalPages;
+        } else if (page < 1) {
+            return 1;
+        }
+        return page;
     }
 
     public Article getById(long id){
