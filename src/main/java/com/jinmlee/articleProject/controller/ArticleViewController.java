@@ -1,10 +1,11 @@
 package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.article.AddArticleViewDto;
+import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
-import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ArticleViewController {
     private final ArticleService articleService;
 
     @GetMapping("/newArticle")
-    public String newArticle(@RequestParam(required = false) Long id, Model model, HttpSession httpSession){
+    public String newArticle(@RequestParam(required = false) Long id, Model model){
 
         if(id == null){
             model.addAttribute("article", new AddArticleViewDto());
@@ -36,10 +37,16 @@ public class ArticleViewController {
     }
 
     @GetMapping("/articleList")
-    public String viewArticleList(Model model){
+    public String viewArticleList(Model model, @RequestParam(defaultValue = "1") int page,
+                                  @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType articleSortType){
 
-        List<ArticleViewListDto> articleList = articleService.getList().stream().map(ArticleViewListDto:: new).toList();
+        ArticlePageDto pageDto = new ArticlePageDto();
+
+        List<ArticleViewListDto> articleList = articleService.getList(page, articleSortType, pageDto).stream().map(ArticleViewListDto:: new).toList();
+
         model.addAttribute("articleList", articleList);
+        model.addAttribute("pageDto", pageDto);
+
 
         return "article/articleList";
     }

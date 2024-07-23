@@ -1,11 +1,13 @@
 package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleResponse;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +34,12 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticle(){
+    public ResponseEntity<List<ArticleResponse>> findAllArticle(@RequestParam(defaultValue = "1") int page,
+                                                                @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType){
 
-        List<ArticleResponse> findArticleList = articleService.getList().stream()
+        ArticlePageDto pageDto = new ArticlePageDto();
+
+        List<ArticleResponse> findArticleList = articleService.getList(page, sortType, pageDto).stream()
                 .map(ArticleResponse::new).toList();
 
         return ResponseEntity.ok().body(findArticleList);

@@ -3,9 +3,12 @@ package com.jinmlee.articleProject.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.enums.ArticleSortType;
+import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,6 +27,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,11 +52,23 @@ class ArticleApiControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @BeforeEach
     public void setMockMvc(){
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
         memberRepository.deleteAll();
+
+        Member savedMember = memberRepository.save(Member.builder()
+                .name("testMember")
+                .loginId("test1")
+                .password(bCryptPasswordEncoder.encode("Test12345!@"))
+                .email("test@test")
+                .phoneNumber("010-1234-1234")
+                .role(Role.USER)
+                .build());
     }
 
     @DisplayName("게시판 글 추가 성공 테스트")
@@ -60,8 +78,9 @@ class ArticleApiControllerTest {
         final String title = "test1";
         final String content = "test1 content";
 
-        Member loggedMember = memberRepository.save(Member.builder()
-                .loginId("testId").name("testName").password("Test12345!@").phoneNumber("010-1234-1234").email("test@email").build());
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         final AddArticleDto addArticleDto = new AddArticleDto(title, content);
 
@@ -70,7 +89,7 @@ class ArticleApiControllerTest {
         ResultActions result = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
-                .sessionAttr("loggedMember", new SessionMemberDto(loggedMember.getId(), loggedMember.getName())));
+                .with(user(customUserDetails)));
 
         result.andExpect(status().isCreated());
 
@@ -82,29 +101,50 @@ class ArticleApiControllerTest {
         assertThat(articles.get(0).getMember().getId()).isEqualTo(loggedMember.getId());
     }
 
-    @DisplayName("개시판 글 목록 전체 조회 성공 테스트")
+    @DisplayName("개시판 글 목록 정렬 조회 성공 테스트")
     @Test
     public void findAllArticle() throws Exception {
         final String url = "/api/articles";
-        final String title = "title";
-        final String content = "content";
 
-        Member loggedMember = memberRepository.save(Member.builder()
-                .loginId("testId").name("testName").password("Test12345!@").phoneNumber("010-1234-1234").email("test@email").build());
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         articleRepository.save(Article.builder()
-                .title(title)
-                .content(content)
+                .title("title1")
+                .content("content1")
+                .member(loggedMember)
+                .build());
+        Thread.sleep(1000);
+        articleRepository.save(Article.builder()
+                .title("title2")
+                .content("content2")
+                .member(loggedMember)
+                .build());
+        Thread.sleep(1000);
+        articleRepository.save(Article.builder()
+                .title("title3")
+                .content("content3")
                 .member(loggedMember)
                 .build());
 
-        final ResultActions result = mockMvc.perform(get(url)
-                .accept(MediaType.APPLICATION_JSON));
+        List<Article> findarticleList = articleRepository.findAll();
+
+        for (Article article : findarticleList){
+            System.out.println(article.getTitle() + " " + article.getCreatedDate());
+        }
+
+        ResultActions result = mockMvc.perform(get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(user(customUserDetails))
+                .param("page", "1")
+                .param("sortType", "CREATED_DESC"));
 
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].content").value(content))
-                .andExpect(jsonPath("$[0].title").value(title));
+                .andExpect(jsonPath("$[0].title").value("title3"))
+                .andExpect(jsonPath("$[1].title").value("title2"))
+                .andExpect(jsonPath("$[2].title").value("title1"));
     }
 
     @DisplayName("게시글 조회 성공 테스트")
@@ -114,8 +154,9 @@ class ArticleApiControllerTest {
         final String title = "title";
         final String content = "content";
 
-        Member loggedMember = memberRepository.save(Member.builder()
-                .loginId("testId").name("testName").password("Test12345!@").phoneNumber("010-1234-1234").email("test@email").build());
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         Article savedArticle = articleRepository.save(Article.builder()
                 .content(content)
@@ -123,7 +164,8 @@ class ArticleApiControllerTest {
                 .member(loggedMember)
                 .build());
 
-        ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
+        ResultActions result = mockMvc.perform(get(url, savedArticle.getId())
+                .with(user(customUserDetails)));
 
         result
                 .andExpect(status().isOk())
@@ -138,8 +180,9 @@ class ArticleApiControllerTest {
         final String title = "title";
         final String content = "content";
 
-        Member loggedMember = memberRepository.save(Member.builder()
-                .loginId("testId").name("testName").password("Test12345!@").phoneNumber("010-1234-1234").email("test@email").build());
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         Article savedArticle = articleRepository.save(Article.builder()
                         .title(title)
@@ -154,6 +197,7 @@ class ArticleApiControllerTest {
 
         ResultActions resultActions = mockMvc.perform(put(url, savedArticle.getId())
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(user(customUserDetails))
                 .content(objectMapper.writeValueAsString(updateArticleDto)));
 
         resultActions.andExpect(status().isOk());
@@ -172,8 +216,9 @@ class ArticleApiControllerTest {
         final String title = "title";
         final String content = "content";
 
-        Member loggedMember = memberRepository.save(Member.builder()
-                .loginId("testId").name("testName").password("Test12345!@").phoneNumber("010-1234-1234").email("test@email").build());
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         Article savedArticle = articleRepository.save(Article.builder()
                 .title(title)
@@ -181,7 +226,8 @@ class ArticleApiControllerTest {
                 .member(loggedMember)
                 .build());
 
-        ResultActions resultActions = mockMvc.perform(get(url, savedArticle.getId()));
+        ResultActions resultActions = mockMvc.perform(get(url, savedArticle.getId())
+                .with(user(customUserDetails)));
 
         resultActions
                 .andExpect(status().isOk());

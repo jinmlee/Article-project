@@ -31,6 +31,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")
