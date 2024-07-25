@@ -9,6 +9,8 @@ import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,28 +38,19 @@ public class ArticleService {
                 .member(member).build());
     }
 
-    public Page<Article> getList(int page, ArticleSortType sortType, ArticlePageDto pageDto){
+    public Page<Article> getList(Pageable pageable) {
 
-        page = isValidPage(page, pageDto.getPageSize());
-
-        Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
-        Pageable pageable = PageRequest.of(page - 1, pageDto.getPageSize(), sort);
-
-        Page<Article> sortedArticle = articleRepository.findAll(pageable);
-        pageDto.updateDto(sortedArticle);
-
-        return sortedArticle;
+        return articleRepository.findAll(pageable);
     }
 
-    public int isValidPage(int page, int pageSize){
+    public Pageable createPageRequest(ArticleSortType sortType, ArticlePageDto pageDto) {
+
         long totalArticles = articleRepository.count();
-        int totalPages = (int)((totalArticles + pageSize - 1) / pageSize);
-        if(page > totalPages){
-            return totalPages;
-        } else if (page < 1) {
-            return 1;
-        }
-        return page;
+        pageDto.isValidPage(totalArticles);
+
+        Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
+
+        return PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize(), sort);
     }
 
     public Article getById(long id){

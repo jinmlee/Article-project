@@ -19,6 +19,10 @@ public class ArticlePageDto {
     private boolean isPreviousPage;
     private int totalPage;
 
+    public ArticlePageDto(int pageNumber){
+        this.pageNumber = pageNumber - 1;
+    }
+
     public int getPageSize(){
         return PAGE_SIZE;
     }
@@ -34,12 +38,12 @@ public class ArticlePageDto {
         this.totalPage = articleList.getTotalPages();
     }
 
-    public int isPage(int pageNum){
-        if(pageNum > totalPage){
-            return totalPage;
-        } else if (pageNum < 1) {
-            return 1;
+    public void isValidPage(long totalArticles){
+        int totalPages = (int)((totalArticles + PAGE_SIZE - 1) / PAGE_SIZE);
+        if(pageNumber + 1 > totalPages){
+            pageNumber = totalPages - 1;
+        } else if (pageNumber < 0) {
+            pageNumber = 0;
         }
-        return pageNum;
     }
 }
