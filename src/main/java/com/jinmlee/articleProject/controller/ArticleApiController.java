@@ -37,9 +37,9 @@ public class ArticleApiController {
     public ResponseEntity<List<ArticleResponse>> findAllArticle(@RequestParam(defaultValue = "1") int page,
                                                                 @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType){
 
-        ArticlePageDto pageDto = new ArticlePageDto();
+        ArticlePageDto pageDto = new ArticlePageDto(page);
 
-        List<ArticleResponse> findArticleList = articleService.getList(page, sortType, pageDto).stream()
+        List<ArticleResponse> findArticleList = articleService.getList(sortType, pageDto).stream()
                 .map(ArticleResponse::new).toList();
 
         return ResponseEntity.ok().body(findArticleList);

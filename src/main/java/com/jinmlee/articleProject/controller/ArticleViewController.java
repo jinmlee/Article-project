@@ -40,9 +40,9 @@ public class ArticleViewController {
     public String viewArticleList(Model model, @RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType articleSortType){
 
-        ArticlePageDto pageDto = new ArticlePageDto();
+        ArticlePageDto pageDto = new ArticlePageDto(page);
 
-        List<ArticleViewListDto> articleList = articleService.getList(page, articleSortType, pageDto).stream().map(ArticleViewListDto:: new).toList();
+        List<ArticleViewListDto> articleList = articleService.getList(articleSortType, pageDto).stream().map(ArticleViewListDto:: new).toList();
 
         model.addAttribute("articleList", articleList);
         model.addAttribute("pageDto", pageDto);

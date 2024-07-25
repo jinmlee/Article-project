@@ -1,102 +1,202 @@
 package com.jinmlee.articleProject.service;
 
+import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
 
-    @Autowired
+    @InjectMocks
     private ArticleService articleService;
 
-    @Autowired
+    @Mock
     private ArticleRepository articleRepository;
 
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Mock
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Mock
+    private ValueOperations<String, Object> valueOperations;
 
     @BeforeEach
     void setUp(){
-        articleRepository.deleteAll();
-        memberRepository.deleteAll();
-
-        Member savedMember1 = memberRepository.save(Member.builder()
-                .name("testMember1")
-                .loginId("test1")
-                .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .email("test@test")
-                .phoneNumber("010-1234-1234")
-                .role(Role.USER)
-                .build());
-
-        Member savedMember2 = memberRepository.save(Member.builder()
-                .name("testMember2")
-                .loginId("test2")
-                .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .email("test@test")
-                .phoneNumber("010-1234-1234")
-                .role(Role.USER)
-                .build());
-
-        Member savedMember3 = memberRepository.save(Member.builder()
-                .name("testMember3")
-                .loginId("test3")
-                .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .email("test@test")
-                .phoneNumber("010-1234-1234")
-                .role(Role.USER)
-                .build());
-
-        articleRepository.save(Article.builder()
-                        .title("title")
-                        .content("content")
-                        .hits(0)
-                        .member(savedMember1)
-                        .build());
 
     }
 
     @Test
-    void incrementViewCount() throws InterruptedException {
+    @DisplayName("게시글 저장 테스트")
+    void saveArticle() {
 
-        List<Member> memberList = memberRepository.findAll();
+        //given
+        AddArticleDto addArticleDto = new AddArticleDto("title", "content");
 
-        for(Member member : memberList){
-            System.out.println(member.getId());
-        }
+        Member member = Member.builder()
+                .id(1L)
+                .build();
 
-        List<Article> articleList = articleRepository.findAll();
+        Article article = Article.builder()
+                .id(1L)
+                .member(member)
+                .title(addArticleDto.getTitle())
+                .content(addArticleDto.getContent())
+                .build();
 
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(0).getId());
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(0).getId());
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(1).getId());
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(1).getId());
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(2).getId());
-        articleService.incrementViewCount(articleList.get(0).getId(), memberList.get(2).getId());
+        when(articleRepository.save(any(Article.class))).thenReturn(article);
 
-        articleService.updateViewCount();
+        //when
+        Article savedArticle = articleService.save(addArticleDto, member);
 
-        Article article = articleRepository.findById(articleList.get(0).getId()).orElseThrow();
+        //then
+        assertThat(savedArticle).isNotNull();
+        assertThat(savedArticle.getId()).isEqualTo(1L);
 
-        Thread.sleep(1000);
+        verify(articleRepository, times(1)).save(any(Article.class));
 
-        assertThat(article.getHits()).isEqualTo(3);
+    }
+
+    @DisplayName("게시글 리스트를 가져오는 테스트")
+    @Test
+    void getArticleList(){
+        //given
+        int page = 1;
+        int totalArticles = 30;
+        ArticleSortType sortType = ArticleSortType.CREATED_DESC;
+        ArticlePageDto pageDto = new ArticlePageDto(page);
+
+        Article article = new Article();
+        List<Article> articleList = List.of(article);
+
+        Pageable pageable = PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize());
+        Page<Article> mockPage = new PageImpl<>(articleList, pageable, totalArticles);
+
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(articleRepository.count()).thenReturn((long)articleList.size());
+
+        //when
+        Page<Article> result = articleService.getList(sortType, pageDto);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getNumber()).isEqualTo(pageDto.getPageNumber());
+
+        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+        verify(articleRepository, times(1)).count();
+    }
+
+    @Test
+    @DisplayName("경계 조건 테스트: 마지막 페이지")
+    void getList_LastPage() {
+
+        //given
+        int page = 3;
+        long totalArticles = 30;
+        ArticleSortType sortType = ArticleSortType.CREATED_DESC;
+        ArticlePageDto pageDto = new ArticlePageDto(page);
+        pageDto.isValidPage(totalArticles);
+
+        List<Article> articleList = List.of(Article.builder().id(1L).build(),Article.builder().id(2L).build(),Article.builder().id(3L).build());
+        Pageable pageable = PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize());
+
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(articleList, pageable, totalArticles));
+        when(articleRepository.count()).thenReturn(totalArticles);
+
+        //when
+        Page<Article> result = articleService.getList(sortType, pageDto);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getNumber()).isEqualTo(page - 1);
+        assertThat(result.getNumber()).isEqualTo(pageDto.getPageNumber());
+
+
+        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+        verify(articleRepository, times(1)).count();
+    }
+
+    @Test
+    @DisplayName("예외 페이지 마이너스")
+    void getList_invalidPage() {
+
+        //given
+        int page = -1;
+        long totalArticles = 30;
+        ArticleSortType sortType = ArticleSortType.CREATED_DESC;
+        ArticlePageDto pageDto = new ArticlePageDto(page);
+        pageDto.isValidPage(totalArticles);
+
+        List<Article> articleList = List.of(Article.builder().id(1L).build(),Article.builder().id(2L).build(),Article.builder().id(3L).build());
+        Pageable pageable = PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize());
+
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(articleList, pageable, totalArticles));
+        when(articleRepository.count()).thenReturn(totalArticles);
+
+        //when
+        Page<Article> result = articleService.getList(sortType, pageDto);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getNumber()).isEqualTo(0);
+        assertThat(result.getNumber()).isEqualTo(pageDto.getPageNumber());
+
+
+        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+        verify(articleRepository, times(1)).count();
+    }
+
+    @Test
+    @DisplayName("예외 페이지 오버 페이지")
+    void getList_invalidPage2() {
+
+        //given
+        int page = 100;
+        long totalArticles = 36;
+        ArticleSortType sortType = ArticleSortType.CREATED_DESC;
+        ArticlePageDto pageDto = new ArticlePageDto(page);
+        pageDto.isValidPage(totalArticles);
+
+        List<Article> articleList = List.of(Article.builder().id(1L).build(),Article.builder().id(2L).build(),Article.builder().id(3L).build());
+        Pageable pageable = PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize());
+
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(articleList, pageable, totalArticles));
+        when(articleRepository.count()).thenReturn(totalArticles);
+
+        //when
+        Page<Article> result = articleService.getList(sortType, pageDto);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getNumber()).isEqualTo(3);
+        assertThat(result.getNumber()).isEqualTo(pageDto.getPageNumber());
+
+
+        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+        verify(articleRepository, times(1)).count();
     }
 }
