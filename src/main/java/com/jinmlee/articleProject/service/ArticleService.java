@@ -38,17 +38,19 @@ public class ArticleService {
                 .member(member).build());
     }
 
-    public Page<Article> getList(ArticleSortType sortType, ArticlePageDto pageDto){
+    public Page<Article> getList(Pageable pageable) {
 
-        pageDto.isValidPage(articleRepository.count());
+        return articleRepository.findAll(pageable);
+    }
+
+    public Pageable createPageRequest(ArticleSortType sortType, ArticlePageDto pageDto) {
+
+        long totalArticles = articleRepository.count();
+        pageDto.isValidPage(totalArticles);
 
         Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
-        Pageable pageable = PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize(), sort);
 
-        Page<Article> sortedArticle = articleRepository.findAll(pageable);
-        pageDto.updateDto(sortedArticle);
-
-        return sortedArticle;
+        return PageRequest.of(pageDto.getPageNumber(), pageDto.getPageSize(), sort);
     }
 
     public Article getById(long id){

@@ -9,6 +9,8 @@ import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,13 +40,16 @@ public class ArticleViewController {
 
     @GetMapping("/articleList")
     public String viewArticleList(Model model, @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType articleSortType){
+                                  @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType){
 
         ArticlePageDto pageDto = new ArticlePageDto(page);
 
-        List<ArticleViewListDto> articleList = articleService.getList(articleSortType, pageDto).stream().map(ArticleViewListDto:: new).toList();
+        Pageable pageable = articleService.createPageRequest(sortType, pageDto);
 
-        model.addAttribute("articleList", articleList);
+        Page<Article> findArticleList = articleService.getList(pageable);
+        pageDto.updateDto(findArticleList);
+
+        model.addAttribute("articleList", findArticleList.stream().map(ArticleViewListDto::new).toList());
         model.addAttribute("pageDto", pageDto);
 
 

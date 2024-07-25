@@ -11,6 +11,8 @@ import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,10 +41,12 @@ public class ArticleApiController {
 
         ArticlePageDto pageDto = new ArticlePageDto(page);
 
-        List<ArticleResponse> findArticleList = articleService.getList(sortType, pageDto).stream()
-                .map(ArticleResponse::new).toList();
+        Pageable pageable = articleService.createPageRequest(sortType, pageDto);
 
-        return ResponseEntity.ok().body(findArticleList);
+        Page<Article> findArticleList = articleService.getList(pageable);
+        pageDto.updateDto(findArticleList);
+
+        return ResponseEntity.ok().body(findArticleList.stream().map(ArticleResponse::new).toList());
     }
 
     @GetMapping("/api/articles/{id}")
