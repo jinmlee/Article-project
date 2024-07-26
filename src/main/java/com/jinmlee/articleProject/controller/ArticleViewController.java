@@ -42,16 +42,9 @@ public class ArticleViewController {
     public String viewArticleList(Model model, @RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType){
 
-        ArticlePageDto pageDto = new ArticlePageDto(page);
+        ArticlePageDto findArticleList = articleService.getList(page, sortType);
 
-        Pageable pageable = articleService.createPageRequest(sortType, pageDto);
-
-        Page<Article> findArticleList = articleService.getList(pageable);
-        pageDto.updateDto(findArticleList);
-
-        model.addAttribute("articleList", findArticleList.stream().map(ArticleViewListDto::new).toList());
-        model.addAttribute("pageDto", pageDto);
-
+        model.addAttribute("pageDto", findArticleList);
 
         return "article/articleList";
     }
