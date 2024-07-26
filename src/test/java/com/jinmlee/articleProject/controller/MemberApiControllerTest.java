@@ -88,7 +88,7 @@ class MemberApiControllerTest {
         assertThat(members.size()).isEqualTo(1);
         assertThat(members.get(0).getName()).isEqualTo(name);
         assertThat(members.get(0).getLoginId()).isEqualTo(loginId);
-        assertThat(members.get(0).getPassword()).isEqualTo(password);
+        assertThat(bCryptPasswordEncoder.matches(password, members.get(0).getPassword())).isTrue();
         assertThat(members.get(0).getPhoneNumber()).isEqualTo(phoneNumber);
         assertThat(members.get(0).getEmail()).isEqualTo(email);
     }
