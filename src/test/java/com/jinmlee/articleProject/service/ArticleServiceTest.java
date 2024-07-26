@@ -50,7 +50,7 @@ class ArticleServiceTest {
 
     @BeforeEach
     void setUp(){
-
+//        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
     @Test
