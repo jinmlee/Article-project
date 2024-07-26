@@ -115,13 +115,11 @@ class ArticleApiControllerTest {
                 .content("content1")
                 .member(loggedMember)
                 .build());
-        Thread.sleep(1000);
         articleRepository.save(Article.builder()
                 .title("title2")
                 .content("content2")
                 .member(loggedMember)
                 .build());
-        Thread.sleep(1000);
         articleRepository.save(Article.builder()
                 .title("title3")
                 .content("content3")
@@ -142,9 +140,9 @@ class ArticleApiControllerTest {
 
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("title3"))
-                .andExpect(jsonPath("$[1].title").value("title2"))
-                .andExpect(jsonPath("$[2].title").value("title1"));
+                .andExpect(jsonPath("$.articleList[0].title").value("title3"))
+                .andExpect(jsonPath("$.articleList[1].title").value("title2"))
+                .andExpect(jsonPath("$.articleList[2].title").value("title1"));
     }
 
     @DisplayName("게시글 조회 성공 테스트")
