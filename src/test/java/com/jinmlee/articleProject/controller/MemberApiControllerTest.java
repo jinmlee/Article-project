@@ -5,6 +5,7 @@ import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
 import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,14 +53,14 @@ class MemberApiControllerTest {
     @Autowired
     private ArticleRepository articleRepository;
 
-    private MockHttpSession session;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
     public void setMockMvc(){
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
         memberRepository.deleteAll();
-        session = new MockHttpSession();
     }
 
 
@@ -89,31 +94,37 @@ class MemberApiControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 테스트")
     public void loginTest() throws Exception {
+        // Given
         final String url = "/api/members/login";
         LoginMemberDto loginMemberDto = new LoginMemberDto("test1", "Test12345!@");
-//        MockHttpSession session = new MockHttpSession();
+
         memberRepository.save(Member.builder()
-                        .name("강호동")
-                        .loginId("test1")
-                        .password("Test12345!@")
-                        .phoneNumber("010-1234-5678")
-                        .email("test1@test")
-                        .build());
+                .name("강호동")
+                .loginId("test1")
+                .password(bCryptPasswordEncoder.encode("Test12345!@"))
+                .phoneNumber("010-1234-5678")
+                .role(Role.USER)
+                .email("test1@test.com")
+                .build());
 
-        final String requestBody = objectMapper.writeValueAsString(loginMemberDto);
-
+        // When
         ResultActions result = mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)
-                .session(session));
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("loginId", loginMemberDto.getLoginId())
+                .param("password", loginMemberDto.getPassword()));
 
+        // Then
+        result.andExpect(status().isFound());
 
-        result.andExpect(status().isOk());
+        MockHttpSession session = (MockHttpSession) result.andReturn().getRequest().getSession();
+        assertThat(session).isNotNull();
 
-        SessionMemberDto loggedMember = (SessionMemberDto) session.getAttribute("loggedMember");
-
-        assertThat(loggedMember).isNotNull();
-        assertThat(loggedMember.getName()).isEqualTo("강호동");
+        SecurityContext securityContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        assertThat(securityContext).isNotNull();
+        Authentication authentication = securityContext.getAuthentication();
+        assertThat(authentication).isNotNull();
+        assertThat(authentication.getName()).isEqualTo("test1");
     }
 }
