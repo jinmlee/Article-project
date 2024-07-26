@@ -25,13 +25,14 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-    public boolean isAuthor(Member member, long commentId){
+    public void isAuthor(Member member, long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("not found comment : " + commentId));
 
-        if(member.getRole() == Role.ADMIN){
-            return true;
-        }
+        if(member.getRole() == Role.ADMIN)
+            return;
 
-        return comment.getMember().equals(member);
+        if(!comment.getMember().equals(member)){
+            throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
+        }
     }
 }
