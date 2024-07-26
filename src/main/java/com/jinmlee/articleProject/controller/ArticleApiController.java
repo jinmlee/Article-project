@@ -36,17 +36,10 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticle(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<ArticlePageDto> findAllArticle(@RequestParam(defaultValue = "1") int page,
                                                                 @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType){
 
-        ArticlePageDto pageDto = new ArticlePageDto(page);
-
-        Pageable pageable = articleService.createPageRequest(sortType, pageDto);
-
-        Page<Article> findArticleList = articleService.getList(pageable);
-        pageDto.updateDto(findArticleList);
-
-        return ResponseEntity.ok().body(findArticleList.stream().map(ArticleResponse::new).toList());
+        return ResponseEntity.ok().body(articleService.getList(page, sortType));
     }
 
     @GetMapping("/api/articles/{id}")
