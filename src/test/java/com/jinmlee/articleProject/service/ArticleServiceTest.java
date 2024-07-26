@@ -21,9 +21,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -241,6 +239,57 @@ class ArticleServiceTest {
 //
 //        verify(articleRepository, times(1)).count();
 //    }
+
+    @Test
+    @DisplayName("조회수 상승 기능 테스트")
+    void incrementViewCount(){
+
+        //given
+        Article article = Article.builder()
+                .id(1L)
+                .hits(0).build();
+
+        Member member = Member.builder()
+                .id(1L).build();
+
+        String key = "article:hits:" + article.getId() + ":" + member.getId();
+
+        when(redisTemplate.hasKey(key)).thenReturn(false);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+
+        //when
+        articleService.incrementViewCount(article.getId(), member.getId());
+
+        //then
+
+        verify(redisTemplate, times(1)).hasKey(key);
+        verify(valueOperations, times(1)).increment(key);
+    }
+
+    @Test
+    @DisplayName("조회수 업데이트 테스트")
+    void updateViewCount() {
+        // given
+        String key1 = "article:hits:1:1";
+        String key2 = "article:hits:1:2";
+        Set<String> keys = new HashSet<>();
+        keys.add(key1);
+        keys.add(key2);
+
+        when(redisTemplate.keys("article:hits:*:*")).thenReturn(keys);
+
+        // when
+        articleService.updateViewCount();
+
+        // then
+        Map<Long, Long> articleHits = new HashMap<>();
+        articleHits.put(1L, 2L);
+
+        for (Map.Entry<Long, Long> entry : articleHits.entrySet()) {
+            verify(articleRepository, times(1)).updateHits(entry.getKey(), entry.getValue());
+        }
+        verify(redisTemplate, times(1)).delete(keys);
+    }
 
 
     @Test
