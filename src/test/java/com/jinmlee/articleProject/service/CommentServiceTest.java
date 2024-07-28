@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +33,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("게시글 답글 저장하는 기능 테스트")
-    void addComment(){
+    void addComment() {
         //given
 
         String content = "content";
@@ -79,7 +78,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 작성자가 일치하는 테스트")
-    void deleteValidUser1(){
+    void deleteValidUser1() {
         //given
 
         Member member = Member.builder()
@@ -100,7 +99,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("댓글 작성자가 불일치")
-    void deleteValidUser2(){
+    void deleteValidUser2() {
         //given
 
         Member member = Member.builder()
@@ -125,7 +124,7 @@ class CommentServiceTest {
 
     @Test
     @DisplayName("관리자인 경우")
-    void deleteValidUser3(){
+    void deleteValidUser3() {
         //given
         Member member = Member.builder()
                 .id(1L).build();

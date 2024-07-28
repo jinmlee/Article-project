@@ -22,15 +22,15 @@ public class ArticlePageDto {
     private int totalPage;
     private List<ArticleViewListDto> articleList;
 
-    public int getPageSize(){
+    public int getPageSize() {
         return PAGE_SIZE;
     }
 
-    public int getPageGroupSize(){
+    public int getPageGroupSize() {
         return PAGE_GROUP_SIZE;
     }
 
-    public ArticlePageDto updateDto(Page<Article> articleList){
+    public ArticlePageDto updateDto(Page<Article> articleList) {
         this.pageNumber = articleList.getNumber();
         this.isNextPage = articleList.hasNext();
         this.isPreviousPage = articleList.hasPrevious();

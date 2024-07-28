@@ -15,23 +15,23 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public Comment save(AddCommentDto addCommentDto, Article article, Member member){
+    public Comment save(AddCommentDto addCommentDto, Article article, Member member) {
 
         return commentRepository.save(addCommentDto.toEntity(article, member));
 
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         commentRepository.deleteById(id);
     }
 
-    public void isAuthor(Member member, long commentId){
+    public void isAuthor(Member member, long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("not found comment : " + commentId));
 
-        if(member.getRole() == Role.ADMIN)
+        if (member.getRole() == Role.ADMIN)
             return;
 
-        if(!comment.getMember().equals(member)){
+        if (!comment.getMember().equals(member)) {
             throw new IllegalArgumentException("댓글 작성자만 삭제 가능합니다.");
         }
     }

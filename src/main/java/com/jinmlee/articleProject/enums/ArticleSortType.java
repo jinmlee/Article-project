@@ -12,7 +12,7 @@ public enum ArticleSortType {
     private final String field;
     private final String direction;
 
-    ArticleSortType(String field, String direction){
+    ArticleSortType(String field, String direction) {
         this.field = field;
         this.direction = direction;
     }

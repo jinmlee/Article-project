@@ -25,7 +25,7 @@ public class CommentApiController {
     private final ArticleService articleService;
 
     @PostMapping("/api/article/{articleId}/comments")
-    public ResponseEntity<CommentResponse> addComment(@PathVariable long articleId, @RequestBody AddCommentDto addCommentDto, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<CommentResponse> addComment(@PathVariable long articleId, @RequestBody AddCommentDto addCommentDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         Article article = articleService.getById(articleId);
 
@@ -35,7 +35,7 @@ public class CommentApiController {
     }
 
     @DeleteMapping("/api/article/{articleId}/comments/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable long articleId, @PathVariable long commentId, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<String> deleteComment(@PathVariable long articleId, @PathVariable long commentId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         commentService.isAuthor(customUserDetails.getMember(), commentId);
 

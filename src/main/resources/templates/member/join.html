@@ -50,7 +50,7 @@
 <script>
     const joinButton = document.getElementById('joinButton');
 
-    joinButton.addEventListener('click', event=> {
+    joinButton.addEventListener('click', event => {
 
         document.getElementById('loginIdError').textContent = '';
         document.getElementById('nameError').textContent = '';
@@ -58,7 +58,7 @@
         document.getElementById('phoneNumberError').textContent = '';
         document.getElementById('emailError').textContent = '';
 
-        fetch("/api/members",{
+        fetch("/api/members", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,8 +70,8 @@
                 phoneNumber: document.getElementById("phoneNumber").value,
                 email: document.getElementById("email").value
             })
-        }).then(response =>{
-            if(!response.ok){
+        }).then(response => {
+            if (!response.ok) {
                 return response.json().then(errorMessages => {
                     throw errorMessages;
                 })
@@ -79,9 +79,9 @@
             return response.json();
         })
             .then(() => {
-            alert("회원가입이 완료되었습니다.")
-            location.replace("/")
-        }).catch(errorMessages => {
+                alert("회원가입이 완료되었습니다.")
+                location.replace("/")
+            }).catch(errorMessages => {
             if (typeof errorMessages === 'object') {
                 for (const [field, message] of Object.entries(errorMessages)) {
                     const errorElement = document.getElementById(`${field}Error`);

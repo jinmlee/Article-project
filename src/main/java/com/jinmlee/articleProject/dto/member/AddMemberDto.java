@@ -1,10 +1,14 @@
 package com.jinmlee.articleProject.dto.member;
 
 import com.jinmlee.articleProject.entity.Member;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +33,7 @@ public class AddMemberDto {
     @Email(message = "이메일 형식을 지켜주세요")
     private String email;
 
-    public Member toEntity(){
+    public Member toEntity() {
         return Member.builder()
                 .name(name)
                 .loginId(loginId)

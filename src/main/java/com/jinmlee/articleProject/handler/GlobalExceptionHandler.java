@@ -15,10 +15,10 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handlerValidationException(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String, String>> handlerValidationException(MethodArgumentNotValidException ex) {
 
-        Map<String,String> errors = new HashMap<>();
-        for(FieldError error : ex.getFieldErrors()){
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : ex.getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
@@ -26,12 +26,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException ex){
+    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> handlerResponseStatusException(ResponseStatusException ex){
+    public ResponseEntity<String> handlerResponseStatusException(ResponseStatusException ex) {
         return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
     }
 }

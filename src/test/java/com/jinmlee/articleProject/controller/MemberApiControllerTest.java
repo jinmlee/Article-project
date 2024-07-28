@@ -3,7 +3,6 @@ package com.jinmlee.articleProject.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
-import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
@@ -31,7 +30,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -57,7 +56,7 @@ class MemberApiControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
-    public void setMockMvc(){
+    public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
         memberRepository.deleteAll();
@@ -71,7 +70,7 @@ class MemberApiControllerTest {
             "유재석, test2, Test56789@#, 010-2345-6789, test2@test",
             "이수근, test3, Test67543$%, 010-3456-7890, test3@test"
     })
-    public void addMember(String name, String loginId, String password, String phoneNumber, String email) throws Exception{
+    public void addMember(String name, String loginId, String password, String phoneNumber, String email) throws Exception {
         final String url = "/api/members";
         AddMemberDto addMemberDto = new AddMemberDto(name, loginId, password, phoneNumber, email);
 
