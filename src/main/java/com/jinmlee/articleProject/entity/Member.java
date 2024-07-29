@@ -15,6 +15,7 @@ public class Member {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    //TODO 인증과 인가를 어떻게 나눠서 처리할 수 있을까?
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -27,10 +28,14 @@ public class Member {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false)
+    @Column(unique = true, name = "email", nullable = false)
     private String email;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    // Car
+    // engine , tire , carMetaData(carName, color)
+    // VO (value object)
 }

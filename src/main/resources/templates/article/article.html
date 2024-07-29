@@ -62,13 +62,13 @@
 <script>
     document.getElementById('modify-btn').addEventListener('click', event => {
         const articleId = document.getElementById('id').value;
-        fetch(`api/articles/${articleId}/editable`,{
+        fetch(`api/articles/${articleId}/editable`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
         }).then((response) => {
-            if(!response.ok){
+            if (!response.ok) {
                 return response.text().then(errorMessage => {
                     throw errorMessage;
                 })

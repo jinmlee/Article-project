@@ -7,11 +7,8 @@ import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.repository.ArticleRepository;
-import com.jinmlee.articleProject.repository.MemberRepository;
 import com.jinmlee.articleProject.util.PageCalculator;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +18,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +28,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public Article save(AddArticleDto addArticleDto, Member member){
+    public Article save(AddArticleDto addArticleDto, Member member) {
 
         return articleRepository.save(Article.builder()
                 .title(addArticleDto.getTitle())
@@ -52,33 +49,34 @@ public class ArticleService {
         return pageDto.updateDto(sortedArticle);
     }
 
-    public Article getById(long id){
+    public Article getById(long id) {
         return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
     }
 
-    public void incrementViewCount(long articleId, long memberId){
+    public void incrementViewCount(long articleId, long memberId) {
         String key = "article:hits:" + articleId + ":" + memberId;
 
-        if(Boolean.FALSE.equals(redisTemplate.hasKey(key))){
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(key))) {
             redisTemplate.opsForValue().increment(key);
         }
     }
+
     @Scheduled(fixedDelay = 1000)
     @Transactional
-    public void updateViewCount(){
+    public void updateViewCount() {
         Set<String> keys = redisTemplate.keys("article:hits:*:*");
 
-        if(keys == null){
+        if (keys == null) {
             return;
         }
 
         Map<Long, Long> articleHits = new HashMap<>();
-        for(String key : keys){
+        for (String key : keys) {
             Long articleId = Long.parseLong(key.split(":")[2]);
-            articleHits.put(articleId, articleHits.getOrDefault( articleId, 0L) + 1);
+            articleHits.put(articleId, articleHits.getOrDefault(articleId, 0L) + 1);
         }
 
-        for (Map.Entry<Long, Long> entry : articleHits.entrySet()){
+        for (Map.Entry<Long, Long> entry : articleHits.entrySet()) {
             articleRepository.updateHits(entry.getKey(), entry.getValue());
         }
 
@@ -87,7 +85,7 @@ public class ArticleService {
 
 
     @Transactional
-    public Article update(long id, UpdateArticleDto updateArticleDto){
+    public Article update(long id, UpdateArticleDto updateArticleDto) {
 
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));

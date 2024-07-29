@@ -14,7 +14,7 @@ public class AddArticleViewDto {
     private String title;
     private String content;
 
-    public AddArticleViewDto(Article article){
+    public AddArticleViewDto(Article article) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();

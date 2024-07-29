@@ -19,9 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -59,7 +57,7 @@ class CommentApiControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
-    public void setMockMvc(){
+    public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity()).build();
     }
@@ -93,9 +91,9 @@ class CommentApiControllerTest {
         CustomUserDetails customUserDetails = new CustomUserDetails(savedMember);
 
         mockMvc.perform(post(url, savedArticle.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)
-                .with(user(customUserDetails)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                        .with(user(customUserDetails)))
                 .andExpect(status().isCreated());
 
         List<Comment> commentList = commentRepository.findAll();

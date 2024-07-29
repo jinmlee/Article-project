@@ -14,7 +14,7 @@ public class AddCommentDto {
 
     private String content;
 
-    public Comment toEntity(Article article, Member member){
+    public Comment toEntity(Article article, Member member) {
         return Comment.builder()
                 .content(content)
                 .article(article)

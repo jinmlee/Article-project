@@ -14,7 +14,7 @@ public class CommentResponse {
     private long articleId;
     private long memberId;
 
-    public CommentResponse(Comment comment){
+    public CommentResponse(Comment comment) {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.articleId = comment.getArticle().getId();

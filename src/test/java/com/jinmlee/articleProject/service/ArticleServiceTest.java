@@ -6,7 +6,6 @@ import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
-import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import com.jinmlee.articleProject.util.PageCalculator;
@@ -49,7 +48,7 @@ class ArticleServiceTest {
     private ValueOperations<String, Object> valueOperations;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
 
     }
 
@@ -125,7 +124,6 @@ class ArticleServiceTest {
         verify(articleRepository, times(1)).findAll(any(Pageable.class));
         verify(articleRepository, times(1)).count();
     }
-
 
 
 //    @Test
@@ -242,7 +240,7 @@ class ArticleServiceTest {
 
     @Test
     @DisplayName("조회수 상승 기능 테스트")
-    void incrementViewCount(){
+    void incrementViewCount() {
 
         //given
         Article article = Article.builder()

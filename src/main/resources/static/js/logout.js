@@ -1,6 +1,6 @@
 const logoutButton = document.getElementById('logout-btn');
 
-if(logoutButton){
+if (logoutButton) {
     logoutButton.addEventListener('click', event => {
         fetch('/api/members/logout', {
             method: "POST",

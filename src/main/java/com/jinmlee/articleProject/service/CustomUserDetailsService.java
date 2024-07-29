@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<Member> findMember = memberRepository.findByLoginId(loginId);
 
-        if(findMember.isPresent()){
+        if (findMember.isPresent()) {
             return new CustomUserDetails(findMember.get());
         }
 

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
-import com.jinmlee.articleProject.dto.member.SessionMemberDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.Member;
-import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
@@ -56,7 +54,7 @@ class ArticleApiControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
-    public void setMockMvc(){
+    public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
         memberRepository.deleteAll();
@@ -73,7 +71,7 @@ class ArticleApiControllerTest {
 
     @DisplayName("게시판 글 추가 성공 테스트")
     @Test
-    public void addArticle() throws Exception{
+    public void addArticle() throws Exception {
         final String url = "/api/articles";
         final String title = "test1";
         final String content = "test1 content";
@@ -128,7 +126,7 @@ class ArticleApiControllerTest {
 
         List<Article> findarticleList = articleRepository.findAll();
 
-        for (Article article : findarticleList){
+        for (Article article : findarticleList) {
             System.out.println(article.getTitle() + " " + article.getCreatedDate());
         }
 
@@ -183,10 +181,10 @@ class ArticleApiControllerTest {
         CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
 
         Article savedArticle = articleRepository.save(Article.builder()
-                        .title(title)
-                        .content(content)
-                        .member(loggedMember)
-                        .build());
+                .title(title)
+                .content(content)
+                .member(loggedMember)
+                .build());
 
         final String newTile = "newTitle";
         final String newContent = "newContent";

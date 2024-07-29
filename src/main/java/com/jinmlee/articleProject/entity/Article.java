@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Article extends BaseTimeEntity{
+public class Article extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,24 +33,24 @@ public class Article extends BaseTimeEntity{
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public void update(String title, String content){
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public long getModifyLimitedDate(){
+    public long getModifyLimitedDate() {
 
         Instant timeNow = Instant.now();
 
         long limitedDate = 10 - ChronoUnit.DAYS.between(getCreatedDate(), timeNow);
-        if(limitedDate <= 0){
+        if (limitedDate <= 0) {
             return 0;
         }
 
         return limitedDate;
     }
 
-    public boolean isEditable(){
+    public boolean isEditable() {
 
         Instant timeNow = Instant.now();
 

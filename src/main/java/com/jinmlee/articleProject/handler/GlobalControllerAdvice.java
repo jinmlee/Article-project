@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class GlobalControllerAdvice {
 
     @ModelAttribute
-    public void loginSessionAddAttributes(Model model, HttpSession httpSession){
+    public void loginSessionAddAttributes(Model model, HttpSession httpSession) {
 
         SessionMemberDto loggedMember = (SessionMemberDto) httpSession.getAttribute("loggedMember");
-        if(loggedMember != null){
+        if (loggedMember != null) {
             model.addAttribute("loggedMember", loggedMember);
         }
     }
