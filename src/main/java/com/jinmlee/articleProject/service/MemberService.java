@@ -16,6 +16,8 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Member save(AddMemberDto addMemberDto) {
+        // TODO add validation
+
         return memberRepository.save(Member.builder()
                 .name(addMemberDto.getName())
                 .loginId(addMemberDto.getLoginId())
