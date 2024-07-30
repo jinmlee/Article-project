@@ -5,7 +5,7 @@ public class PageCalculator {
     public static int calculateValidPageNumber(int pageNumber, long totalObject, int pageSize) {
         int totalPage = (int) ((totalObject + pageSize - 1) / pageSize);
 
-        if (pageNumber > totalPage) {
+        if (pageNumber > totalPage && totalPage != 0) {
             return totalPage;
         } else if (pageNumber < 1) {
             return 1;
