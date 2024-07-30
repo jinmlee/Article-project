@@ -1,56 +1,56 @@
-import requests
+import pymysql
 import random
 import string
+from datetime import datetime, timedelta
 
 # 랜덤한 문자열 생성 함수
 def random_string(length):
     letters = string.ascii_letters + string.digits
     return ''.join(random.choice(letters) for i in range(length))
 
-# 로그인 함수
-def login(base_url, login_id, password):
-    login_url = f"{base_url}/api/members/login"
-    login_data = {
-        "loginId": login_id,
-        "password": password
-    }
-    session = requests.Session()
-    response = session.post(login_url, data=login_data)  # form data 형식으로 전송
-    if response.status_code == 200 or response.status_code == 302:  # Spring Security는 리다이렉트할 수 있습니다.
-        print("Login successful")
-        return session
-    else:
-        print(f"Login failed: {response.status_code} {response.text}")
-        return None
+# 지난 한 달 내의 랜덤 시간 생성 함수
+def random_time_within_last_month():
+    now = datetime.now()
+    random_days = random.randint(0, 30)
+    random_seconds = random.randint(0, 24 * 60 * 60)
+    random_time = now - timedelta(days=random_days, seconds=random_seconds)
+    return random_time.strftime('%Y-%m-%d %H:%M:%S')
 
-# 게시글 정보를 대량으로 추가하는 함수
-def bulk_add_articles(base_url, session, count):
-    url = f"{base_url}/api/articles"
-    for i in range(count):
+# 데이터베이스 연결 설정
+conn = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='wls960aha!',
+    db='article',
+    charset='utf8mb4',
+    cursorclass=pymysql.cursors.DictCursor,
+    ssl_disabled=True
+)
+cur = conn.cursor()
+
+# 아티클 데이터 삽입 함수
+def insert_articles(num_articles):
+    for i in range(num_articles):
         title = random_string(10)
         content = random_string(50)
+        member_id = random.randint(1, 100)
+        created_date = random_time_within_last_month()
+        modified_date = created_date  # 수정 시간도 생성 시간과 동일하게 설정
 
-        data = {
-            "title": title,
-            "content": content
-        }
+        cur.execute("""
+            INSERT INTO article (title, content, hits, member_id, created_date, modified_date)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (title, content, 0, member_id, created_date, modified_date))
+        if (i + 1) % 100 == 0:
+            print(f"Inserted {i + 1} articles")
+            conn.commit()  # 주기적으로 커밋하여 성능 향상
 
-        response = session.post(url, json=data)
-        if response.status_code == 201:
-            print(f"Article {i+1} added successfully")
-        else:
-            print(f"Failed to add article {i+1}: {response.status_code} {response.text}")
+# 아티클 데이터 삽입
+num_articles = 10000
+insert_articles(num_articles)
 
-# 기본 URL 설정
-base_url = "http://localhost:8081"
-
-# 로그인 정보 설정
-login_id = "test1"
-password = "Test12345!@"
-
-# 로그인 수행
-session = login(base_url, login_id, password)
-
-if session:
-    # 10,000개의 게시글 정보를 추가
-    bulk_add_articles(base_url, session, 10000)
+# 최종 커밋 및 연결 종료
+conn.commit()
+cur.close()
+conn.close()
+print("All articles inserted successfully")
