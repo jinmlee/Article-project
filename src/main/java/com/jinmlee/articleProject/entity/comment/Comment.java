@@ -2,7 +2,7 @@ package com.jinmlee.articleProject.entity.comment;
 
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.BaseTimeEntity;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -15,7 +15,6 @@ public class ArticleViewDto {
     private String title;
     private String content;
     private long memberId;
-    private String memberName;
     private Instant createdDate;
     private long modifyLimitedDate;
 
@@ -24,7 +23,6 @@ public class ArticleViewDto {
         this.title = article.getTitle();
         this.content = article.getContent();
         this.memberId = article.getMember().getId();
-        this.memberName = article.getMember().getName();
         this.createdDate = article.getCreatedDate();
         this.modifyLimitedDate = article.getModifyLimitedDate();
     }

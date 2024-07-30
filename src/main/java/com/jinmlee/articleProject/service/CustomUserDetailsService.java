@@ -1,7 +1,7 @@
 package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

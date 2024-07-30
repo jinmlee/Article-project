@@ -3,9 +3,11 @@ package com.jinmlee.articleProject.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
+import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +49,10 @@ class MemberApiControllerTest {
     private WebApplicationContext context;
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberInfoRepository memberInfoRepository;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -59,6 +64,7 @@ class MemberApiControllerTest {
     public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
+        memberInfoRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
@@ -72,24 +78,25 @@ class MemberApiControllerTest {
     })
     public void addMember(String name, String loginId, String password, String phoneNumber, String email) throws Exception {
         final String url = "/api/members";
-        AddMemberDto addMemberDto = new AddMemberDto(name, loginId, password, phoneNumber, email);
+        AddMemberDto addMemberDto = new AddMemberDto(loginId, password, name, phoneNumber, email, Role.USER, null);
 
-        final String requestBody = objectMapper.writeValueAsString(addMemberDto);
+        final String requestMember = objectMapper.writeValueAsString(addMemberDto);
 
         ResultActions result = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody));
+                .content(requestMember));
 
         result.andExpect(status().isCreated());
 
         List<Member> members = memberRepository.findAll();
+        List<MemberInfo> memberInfos = memberInfoRepository.findAll();
 
         assertThat(members.size()).isEqualTo(1);
-        assertThat(members.get(0).getName()).isEqualTo(name);
+        assertThat(memberInfos.get(0).getName()).isEqualTo(name);
         assertThat(members.get(0).getLoginId()).isEqualTo(loginId);
         assertThat(bCryptPasswordEncoder.matches(password, members.get(0).getPassword())).isTrue();
-        assertThat(members.get(0).getPhoneNumber()).isEqualTo(phoneNumber);
-        assertThat(members.get(0).getEmail()).isEqualTo(email);
+        assertThat(memberInfos.get(0).getPhoneNumber()).isEqualTo(phoneNumber);
+        assertThat(memberInfos.get(0).getEmail()).isEqualTo(email);
     }
 
     @Test
@@ -100,12 +107,9 @@ class MemberApiControllerTest {
         LoginMemberDto loginMemberDto = new LoginMemberDto("test1", "Test12345!@");
 
         memberRepository.save(Member.builder()
-                .name("강호동")
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .phoneNumber("010-1234-5678")
                 .role(Role.USER)
-                .email("test1@test.com")
                 .build());
 
         // When
