@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
+import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.member.Member;
@@ -44,7 +45,7 @@ public class ArticleService {
         Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
         Pageable pageable = PageRequest.of(page - 1, pageDto.getPageSize(), sort);
 
-        Page<Article> sortedArticle = articleRepository.findAll(pageable);
+        Page<ArticleViewListDto> sortedArticle = articleRepository.getArticleSortedList(pageable);
 
         return pageDto.updateDto(sortedArticle);
     }

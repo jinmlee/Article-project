@@ -70,6 +70,12 @@ class ArticleApiControllerTest {
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
                 .role(Role.USER)
                 .build());
+
+        MemberInfo savedMemberInfo = memberInfoRepository.save(MemberInfo.builder()
+                .member(savedMember)
+                .name("name")
+                .phoneNumber("010-1234-1234")
+                .email("test@test").build());
     }
 
     @DisplayName("게시판 글 추가 성공 테스트")
@@ -126,12 +132,6 @@ class ArticleApiControllerTest {
                 .content("content3")
                 .member(loggedMember)
                 .build());
-
-        List<Article> findarticleList = articleRepository.findAll();
-
-        for (Article article : findarticleList) {
-            System.out.println(article.getTitle() + " " + article.getCreatedDate());
-        }
 
         ResultActions result = mockMvc.perform(get(url)
                 .accept(MediaType.APPLICATION_JSON)
