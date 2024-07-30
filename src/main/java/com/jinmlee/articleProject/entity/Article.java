@@ -1,5 +1,6 @@
 package com.jinmlee.articleProject.entity;
 
+import com.jinmlee.articleProject.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

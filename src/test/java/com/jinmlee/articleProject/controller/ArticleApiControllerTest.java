@@ -5,9 +5,11 @@ import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
+import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,20 +53,21 @@ class ArticleApiControllerTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private MemberInfoRepository memberInfoRepository;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
     public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         articleRepository.deleteAll();
+        memberInfoRepository.deleteAll();
         memberRepository.deleteAll();
 
         Member savedMember = memberRepository.save(Member.builder()
-                .name("testMember")
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .email("test@test")
-                .phoneNumber("010-1234-1234")
                 .role(Role.USER)
                 .build());
     }

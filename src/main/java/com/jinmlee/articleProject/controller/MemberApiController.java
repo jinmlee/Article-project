@@ -2,7 +2,7 @@ package com.jinmlee.articleProject.controller;
 
 import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.MemberResponse;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

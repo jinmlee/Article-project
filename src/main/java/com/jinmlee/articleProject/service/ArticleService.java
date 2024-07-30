@@ -4,7 +4,7 @@ import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.util.PageCalculator;

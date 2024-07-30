@@ -1,7 +1,7 @@
 package com.jinmlee.articleProject.dto.comment;
 
 import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.comment.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

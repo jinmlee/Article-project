@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.comment.AddCommentDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.Member;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.comment.Comment;
+import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.repository.CommentRepository;
+import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,10 +56,17 @@ class CommentApiControllerTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private MemberInfoRepository memberInfoRepository;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @BeforeEach
     public void setMockMvc() {
+        commentRepository.deleteAll();
+        articleRepository.deleteAll();
+        memberInfoRepository.deleteAll();
+        memberRepository.deleteAll();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(springSecurity()).build();
     }
@@ -71,11 +80,8 @@ class CommentApiControllerTest {
         final String content = "testComment";
 
         Member savedMember = memberRepository.save(Member.builder()
-                .name("testMember")
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
-                .email("test@test")
-                .phoneNumber("010-1234-1234")
                 .role(Role.USER)
                 .build());
 
