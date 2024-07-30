@@ -30,12 +30,12 @@ public class ArticlePageDto {
         return PAGE_GROUP_SIZE;
     }
 
-    public ArticlePageDto updateDto(Page<Article> articleList) {
+    public ArticlePageDto updateDto(Page<ArticleViewListDto> articleList) {
         this.pageNumber = articleList.getNumber();
         this.isNextPage = articleList.hasNext();
         this.isPreviousPage = articleList.hasPrevious();
         this.totalPage = articleList.getTotalPages();
-        this.articleList = articleList.stream().map(ArticleViewListDto::new).toList();
+        this.articleList = articleList.stream().toList();
 
         return this;
     }

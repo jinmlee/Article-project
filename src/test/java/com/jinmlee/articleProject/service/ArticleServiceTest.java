@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
+import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.member.Member;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,20 +94,14 @@ class ArticleServiceTest {
         ArticleSortType sortType = ArticleSortType.CREATED_DESC;
         ArticlePageDto pageDto = new ArticlePageDto();
 
-        Member member = Member.builder()
-                .id(1L)
-                .build();
+        ArticleViewListDto articleDto1 = new ArticleViewListDto(1L, "Title1", "Member1", 0, Instant.now());
 
-        Article article = Article.builder()
-                .id(1L)
-                .member(member).build();
-
-        List<Article> articleList = List.of(article);
+        List<ArticleViewListDto> articleList = List.of(articleDto1);
         Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.DESC));
         Pageable pageable = PageRequest.of(PageCalculator.calculateValidPageNumber(page, totalArticles, pageDto.getPageSize()) - 1, pageDto.getPageSize(), sort);
-        Page<Article> mockPage = new PageImpl<>(articleList, pageable, totalArticles);
+        Page<ArticleViewListDto> mockPage = new PageImpl<>(articleList, pageable, totalArticles);
 
-        when(articleRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        when(articleRepository.getArticleSortedList(any(Pageable.class))).thenReturn(mockPage);
         when(articleRepository.count()).thenReturn(totalArticles);
 
         // when
@@ -120,7 +116,7 @@ class ArticleServiceTest {
         assertThat(result.getArticleList().size()).isEqualTo(articleList.size());
         assertThat(result.getArticleList().get(0).getId()).isEqualTo(articleList.get(0).getId());
 
-        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+        verify(articleRepository, times(1)).getArticleSortedList(any(Pageable.class));
         verify(articleRepository, times(1)).count();
     }
 
