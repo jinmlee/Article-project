@@ -4,6 +4,7 @@ import com.jinmlee.articleProject.dto.article.*;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
+import com.jinmlee.articleProject.handler.ResourceNotFoundException;
 import com.jinmlee.articleProject.repository.ArticleRepository;
 import com.jinmlee.articleProject.util.PageCalculator;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -90,13 +92,28 @@ public class ArticleService {
         redisTemplate.delete(keys);
     }
 
+    @Transactional
+    public void softDelete(long id){
+
+        Optional<Article> findArticle = articleRepository.findById(id);
+        if(findArticle.isEmpty()){
+            throw new ResourceNotFoundException("Article not found with id: " + id);
+        }
+
+        Article article = findArticle.get();
+        article.delete();
+    }
+
 
     @Transactional
     public Article update(long id, UpdateArticleDto updateArticleDto) {
 
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+        Optional<Article> findArticle = articleRepository.findById(id);
+        if(findArticle.isEmpty()){
+            throw new ResourceNotFoundException("Article not found with id: " + id);
+        }
 
+        Article article = findArticle.get();
         article.update(updateArticleDto.getTitle(), updateArticleDto.getContent());
 
         return article;

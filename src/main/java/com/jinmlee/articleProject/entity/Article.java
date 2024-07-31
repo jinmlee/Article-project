@@ -34,21 +34,12 @@ public class Article extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public long getModifyLimitedDate() {
-
-        Instant timeNow = Instant.now();
-
-        long limitedDate = 10 - ChronoUnit.DAYS.between(getCreatedDate(), timeNow);
-        if (limitedDate <= 0) {
-            return 0;
-        }
-
-        return limitedDate;
     }
 
     public boolean isEditable() {
@@ -56,5 +47,9 @@ public class Article extends BaseTimeEntity {
         Instant timeNow = Instant.now();
 
         return ChronoUnit.DAYS.between(getCreatedDate(), timeNow) <= 10;
+    }
+
+    public void delete(){
+        this.deletedAt = Instant.now();
     }
 }

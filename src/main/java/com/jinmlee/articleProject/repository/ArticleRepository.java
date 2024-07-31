@@ -13,9 +13,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
+
+    @Query("select a from Article a where a.id = :id and a.deletedAt is null")
+    Optional<Article> findById(@Param("id") long id);
 
     @Modifying
     @Transactional
@@ -25,13 +29,14 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewListDto(a.id, a.title, mi.name, a.hits, a.createdDate) " +
             "from Article a " +
             "left join a.member m " +
-            "left join MemberInfo mi on mi.member = m")
+            "left join MemberInfo mi on mi.member = m " +
+            "where a.deletedAt is null")
     Page<ArticleViewListDto> getArticleSortedList(Pageable pageable);
 
     @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewDto(a.id, a.title, a.content, m.id, mi.name, a.hits, a.createdDate) " +
             "from Article a " +
             "left join a.member m " +
             "left join MemberInfo mi on mi.member = m " +
-            "where a.id = :id")
+            "where a.id = :id and a.deletedAt is null")
     ArticleViewDto findViewArticle(@Param("id") long id);
 }
