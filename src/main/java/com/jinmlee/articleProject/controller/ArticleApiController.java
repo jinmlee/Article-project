@@ -51,6 +51,14 @@ public class ArticleApiController {
         return ResponseEntity.ok().body(new ArticleResponse(updateArticle));
     }
 
+    @DeleteMapping("/api/articles/{id}")
+    public ResponseEntity<String> deleteArticle(@PathVariable long id){
+
+        articleService.softDelete(id);
+
+        return ResponseEntity.ok().body("삭제가 완료 되었습니다.");
+    }
+
     @GetMapping("/api/articles/{id}/editable")
     public ResponseEntity<ArticleResponse> checkEditable(@PathVariable long id) {
 
