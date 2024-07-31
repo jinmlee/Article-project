@@ -36,7 +36,7 @@ public class ArticleService {
                 .member(member).build());
     }
 
-    public ArticlePageDto getList(int page, ArticleSortType sortType) {
+    public ArticlePageDto getList(int page, ArticleSortType sortType, String keyword) {
 
         ArticlePageDto pageDto = new ArticlePageDto();
 
@@ -44,7 +44,7 @@ public class ArticleService {
         Sort sort = Sort.by(Sort.Order.by(sortType.getField()).with(Sort.Direction.fromString(sortType.getDirection())));
         Pageable pageable = PageRequest.of(page - 1, pageDto.getPageSize(), sort);
 
-        Page<ArticleViewListDto> sortedArticle = articleRepository.getArticleSortedList(pageable);
+        Page<ArticleViewListDto> sortedArticle = articleRepository.getArticleSortedList(keyword, pageable);
 
         return pageDto.updateDto(sortedArticle);
     }

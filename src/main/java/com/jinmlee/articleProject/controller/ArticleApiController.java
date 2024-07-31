@@ -30,9 +30,10 @@ public class ArticleApiController {
 
     @GetMapping("/api/articles")
     public ResponseEntity<ArticlePageDto> findAllArticle(@RequestParam(defaultValue = "1") int page,
-                                                         @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType) {
+                                                         @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType,
+                                                         @RequestParam(defaultValue = "") String keyword) {
 
-        return ResponseEntity.ok().body(articleService.getList(page, sortType));
+        return ResponseEntity.ok().body(articleService.getList(page, sortType, keyword));
     }
 
     @GetMapping("/api/articles/{id}")
