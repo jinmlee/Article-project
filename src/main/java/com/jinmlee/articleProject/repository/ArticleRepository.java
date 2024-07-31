@@ -30,8 +30,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             "from Article a " +
             "left join a.member m " +
             "left join MemberInfo mi on mi.member = m " +
-            "where a.deletedAt is null")
-    Page<ArticleViewListDto> getArticleSortedList(Pageable pageable);
+            "where a.deletedAt is null and a.title like %:keyword%")
+    Page<ArticleViewListDto> getArticleSortedList(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewDto(a.id, a.title, a.content, m.id, mi.name, a.hits, a.createdDate) " +
             "from Article a " +

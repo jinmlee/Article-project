@@ -36,9 +36,10 @@ public class ArticleViewController {
 
     @GetMapping("/articleList")
     public String viewArticleList(Model model, @RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType) {
+                                  @RequestParam(defaultValue = "CREATED_DESC") ArticleSortType sortType,
+                                  @RequestParam(defaultValue = "") String keyword) {
 
-        ArticlePageDto findArticleList = articleService.getList(page, sortType);
+        ArticlePageDto findArticleList = articleService.getList(page, sortType, keyword);
 
         model.addAttribute("pageDto", findArticleList);
 
