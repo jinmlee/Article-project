@@ -1,5 +1,6 @@
 package com.jinmlee.articleProject.repository;
 
+import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.entity.Article;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             "left join a.member m " +
             "left join MemberInfo mi on mi.member = m")
     Page<ArticleViewListDto> getArticleSortedList(Pageable pageable);
+
+    @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewDto(a.id, a.title, a.content, m.id, mi.name, a.hits, a.createdDate) " +
+            "from Article a " +
+            "left join a.member m " +
+            "left join MemberInfo mi on mi.member = m " +
+            "where a.id = :id")
+    ArticleViewDto findViewArticle(@Param("id") long id);
 }

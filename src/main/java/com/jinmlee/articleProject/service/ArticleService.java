@@ -1,9 +1,6 @@
 package com.jinmlee.articleProject.service;
 
-import com.jinmlee.articleProject.dto.article.AddArticleDto;
-import com.jinmlee.articleProject.dto.article.ArticlePageDto;
-import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
-import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
+import com.jinmlee.articleProject.dto.article.*;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
@@ -52,6 +49,15 @@ public class ArticleService {
 
     public Article getById(long id) {
         return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
+    }
+
+    public ArticleViewDto getViewArticle(long id){
+
+        ArticleViewDto articleViewDto = articleRepository.findViewArticle(id);
+
+        articleViewDto.setModifyLimitedDate();
+
+        return articleViewDto;
     }
 
     public void incrementViewCount(long articleId, long memberId) {
