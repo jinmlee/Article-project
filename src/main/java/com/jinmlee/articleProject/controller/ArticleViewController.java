@@ -3,10 +3,12 @@ package com.jinmlee.articleProject.controller;
 import com.jinmlee.articleProject.dto.article.AddArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
+import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,12 +45,14 @@ public class ArticleViewController {
         return "article/articleList";
     }
 
-    @GetMapping("/article{id}")
-    public String viewArticle(@PathVariable long id, Model model) {
+    @GetMapping("/article/{id}")
+    public String viewArticle(@PathVariable long id, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        Article article = articleService.getById(id);
+        ArticleViewDto article = articleService.getViewArticle(id);
 
-        model.addAttribute("article", new ArticleViewDto(article));
+        articleService.incrementViewCount(id, customUserDetails.getMember().getId());
+
+        model.addAttribute("article", article);
 
         return "article/article";
     }
