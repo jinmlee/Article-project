@@ -1,6 +1,5 @@
 package com.jinmlee.articleProject.entity.alarm;
 
-import com.jinmlee.articleProject.entity.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type")
 @Getter
 @Builder
 public class Alarm {
@@ -32,7 +30,7 @@ public class Alarm {
 
     private Instant createdDate;
 
-    private boolean read;
+    private boolean readFlag;
 
     public Alarm(Member member, String message){
         this.member = member;

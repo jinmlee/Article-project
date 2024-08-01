@@ -6,7 +6,7 @@ import com.jinmlee.articleProject.dto.member.LoginMemberDto;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
-import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

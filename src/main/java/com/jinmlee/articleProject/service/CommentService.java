@@ -1,7 +1,7 @@
 package com.jinmlee.articleProject.service;
 
 import com.jinmlee.articleProject.dto.comment.AddCommentDto;
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.comment.Comment;
 import com.jinmlee.articleProject.enums.Role;

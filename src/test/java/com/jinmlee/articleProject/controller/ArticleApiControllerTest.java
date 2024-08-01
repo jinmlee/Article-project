@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
+import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
-import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
+import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +52,9 @@ class ArticleApiControllerTest {
     private ArticleRepository articleRepository;
 
     @Autowired
+    private ArticleLikeRepository articleLikeRepository;
+
+    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
@@ -61,6 +66,7 @@ class ArticleApiControllerTest {
     @BeforeEach
     public void setMockMvc() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        articleLikeRepository.deleteAll();
         articleRepository.deleteAll();
         memberInfoRepository.deleteAll();
         memberRepository.deleteAll();
@@ -232,4 +238,72 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @DisplayName("게시글 좋아요 기능 테스트")
+    @Test
+    void addLike() throws Exception {
+        //given
+        final String url = "/api/article/{id}/like";
+
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
+
+        Article article = articleRepository.save(Article.builder()
+                .member(loggedMember)
+                .hits(0)
+                .title("title")
+                .content("content")
+                .deletedAt(null)
+                .build());
+
+        //when
+
+        ResultActions resultActions = mockMvc.perform(post(url, article.getId())
+                .with(user(customUserDetails)));
+
+        List<ArticleLike> articleLikes = articleLikeRepository.findAll();
+        //then
+
+        resultActions
+                .andExpect(status().isOk());
+
+        assertThat(articleLikes.size()).isEqualTo(1);
+    }
+
+
+    @DisplayName("게시글 삭제 기능 테스트")
+    @Test
+    void deleteLike() throws Exception {
+        //given
+        final String url = "/api/article/{id}/like";
+
+        List<Member> findMembers = memberRepository.findAll();
+        Member loggedMember = findMembers.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggedMember);
+
+        Article article = articleRepository.save(Article.builder()
+                .member(loggedMember)
+                .hits(0)
+                .title("title")
+                .content("content")
+                .deletedAt(null)
+                .build());
+
+        articleLikeRepository.save(ArticleLike.builder()
+                .member(loggedMember)
+                .article(article).build());
+
+        //when
+
+        ResultActions resultActions = mockMvc.perform(post(url, article.getId())
+                .with(user(customUserDetails)));
+
+        List<ArticleLike> articleLikes = articleLikeRepository.findAll();
+        //then
+
+        resultActions
+                .andExpect(status().isOk());
+
+        assertThat(articleLikes.size()).isEqualTo(0);
+    }
 }

@@ -1,6 +1,5 @@
 package com.jinmlee.articleProject.dto.article;
 
-import com.jinmlee.articleProject.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

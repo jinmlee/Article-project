@@ -1,7 +1,5 @@
-package com.jinmlee.articleProject.entity.comment;
+package com.jinmlee.articleProject.entity.article;
 
-import com.jinmlee.articleProject.entity.article.Article;
-import com.jinmlee.articleProject.entity.BaseTimeEntity;
 import com.jinmlee.articleProject.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,24 +8,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Builder
-public class Comment extends BaseTimeEntity {
+@Table(
+        name = "article_like",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"member_id", "article_id"})
+        }
+)
+public class ArticleLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
-
-    @Column(name = "content", nullable = false)
-    private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ariticle_id", nullable = false)
-    private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    private Article article;
 }
