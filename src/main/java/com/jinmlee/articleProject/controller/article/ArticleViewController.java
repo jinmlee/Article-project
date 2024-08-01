@@ -1,12 +1,12 @@
-package com.jinmlee.articleProject.controller;
+package com.jinmlee.articleProject.controller.article;
 
 import com.jinmlee.articleProject.dto.article.AddArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.enums.ArticleSortType;
-import com.jinmlee.articleProject.service.ArticleService;
+import com.jinmlee.articleProject.service.article.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

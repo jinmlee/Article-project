@@ -1,11 +1,9 @@
 package com.jinmlee.articleProject.service;
 
-import com.jinmlee.articleProject.entity.Article;
-import com.jinmlee.articleProject.entity.alarm.Alarm;
+import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.alarm.EditLimitedLineAlarm;
 import com.jinmlee.articleProject.repository.AlarmRepository;
-import com.jinmlee.articleProject.repository.ArticleRepository;
-import com.jinmlee.articleProject.repository.MemberRepository;
+import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

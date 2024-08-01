@@ -1,8 +1,8 @@
-package com.jinmlee.articleProject.repository;
+package com.jinmlee.articleProject.repository.article;
 
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("select a from Article a where a.id = :id and a.deletedAt is null")
-    Optional<Article> findById(@Param("id") long id);
+    Optional<Article> findById(@Param("id") Long id);
 
     @Modifying
     @Transactional

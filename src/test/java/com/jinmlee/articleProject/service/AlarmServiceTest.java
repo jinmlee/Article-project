@@ -1,10 +1,10 @@
 package com.jinmlee.articleProject.service;
 
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.alarm.EditLimitedLineAlarm;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.repository.AlarmRepository;
-import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

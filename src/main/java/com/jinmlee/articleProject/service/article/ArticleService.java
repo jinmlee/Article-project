@@ -1,11 +1,11 @@
-package com.jinmlee.articleProject.service;
+package com.jinmlee.articleProject.service.article;
 
 import com.jinmlee.articleProject.dto.article.*;
-import com.jinmlee.articleProject.entity.Article;
+import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.handler.ResourceNotFoundException;
-import com.jinmlee.articleProject.repository.ArticleRepository;
+import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.util.PageCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,8 @@ public class ArticleService {
         return articleRepository.save(Article.builder()
                 .title(addArticleDto.getTitle())
                 .content(addArticleDto.getContent())
-                .member(member).build());
+                .member(member)
+                .build());
     }
 
     public ArticlePageDto getList(int page, ArticleSortType sortType, String keyword) {
