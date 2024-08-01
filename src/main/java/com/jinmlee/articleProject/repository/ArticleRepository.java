@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,4 +40,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             "left join MemberInfo mi on mi.member = m " +
             "where a.id = :id and a.deletedAt is null")
     ArticleViewDto findViewArticle(@Param("id") long id);
+
+    @Query("select a from Article a where a.createdDate BETWEEN :start and :end")
+    List<Article> findEditLimitedLineArticle(@Param("start") Instant start, @Param("end") Instant end);
 }
