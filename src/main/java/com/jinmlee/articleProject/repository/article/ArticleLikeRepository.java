@@ -1,7 +1,6 @@
 package com.jinmlee.articleProject.repository.article;
 
 import com.jinmlee.articleProject.entity.article.ArticleLike;
-import com.jinmlee.articleProject.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

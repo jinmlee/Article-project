@@ -18,10 +18,11 @@ public class ArticleViewDto {
     private String author;
     private long hits;
     private Instant createdDate;
+    private Long likes;
     private long modifyLimitedDate;
 
     public ArticleViewDto(Long id, String title, String content,
-                          long memberId, String author, long hits, Instant createdDate) {
+                          long memberId, String author, long hits, Instant createdDate, Long likes) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -29,6 +30,7 @@ public class ArticleViewDto {
         this.author = author;
         this.hits = hits;
         this.createdDate = createdDate;
+        this.likes = likes;
     }
 
     public void setModifyLimitedDate() {
