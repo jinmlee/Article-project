@@ -61,7 +61,8 @@ public class ArticleService {
 
     public ArticleViewDto getViewArticle(long id){
 
-        ArticleViewDto articleViewDto = articleRepository.findViewArticle(id);
+        ArticleViewDto articleViewDto = articleRepository.findViewArticle(id)
+                .orElseThrow(() -> new ResourceNotFoundException("not found article id: " + id));
 
         articleViewDto.setModifyLimitedDate();
 

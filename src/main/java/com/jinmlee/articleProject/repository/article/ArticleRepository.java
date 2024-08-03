@@ -33,12 +33,12 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
             "where a.deletedAt is null and a.title like %:keyword%")
     Page<ArticleViewListDto> getArticleSortedList(@Param("keyword") String keyword, Pageable pageable);
 
-    @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewDto(a.id, a.title, a.content, m.id, mi.name, a.hits, a.createdDate) " +
-            "from Article a " +
-            "left join a.member m " +
-            "left join MemberInfo mi on mi.member = m " +
-            "where a.id = :id and a.deletedAt is null")
-    ArticleViewDto findViewArticle(@Param("id") long id);
+//    @Query("select new com.jinmlee.articleProject.dto.article.ArticleViewDto(a.id, a.title, a.content, m.id, mi.name, a.hits, a.createdDate) " +
+//            "from Article a " +
+//            "left join a.member m " +
+//            "left join MemberInfo mi on mi.member = m " +
+//            "where a.id = :id and a.deletedAt is null")
+//    ArticleViewDto findViewArticle(@Param("id") long id);
 
     @Query("select a from Article a where a.createdDate BETWEEN :start and :end")
     List<Article> findEditLimitedLineArticle(@Param("start") Instant start, @Param("end") Instant end);

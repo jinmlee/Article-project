@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinmlee.articleProject.dto.article.AddArticleDto;
+import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.article.Article;
@@ -297,6 +298,37 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(articleLikes.size()).isEqualTo(1);
+    }
+
+    @DisplayName("게시글 좋아요 여러명 눌렀을시 게시글 조회 테스트")
+    @Test
+    void getViewArticleLikes(){
+
+        List<Member> findMembers = memberRepository.findAll();
+        Member member1 = findMembers.get(0);
+
+        Member member2 = memberRepository.save(Member.builder()
+                .loginId("test2")
+                .password(bCryptPasswordEncoder.encode("test2"))
+                .role(Role.USER).build());
+
+        Article article = articleRepository.save(Article.builder()
+                .id(1L)
+                .hits(0)
+                .title("title")
+                .content("content")
+                .member(member1).build());
+
+        articleLikeRepository.save(ArticleLike.builder()
+                .articleId(article.getId())
+                .memberId(member1.getId()).build());
+        articleLikeRepository.save(ArticleLike.builder()
+                .articleId(article.getId())
+                .memberId(member2.getId()).build());
+
+        ArticleViewDto articleViewDto = articleRepository.findViewArticle(article.getId()).get();
+
+        assertThat(articleViewDto.getLikes()).isEqualTo(2);
     }
 
 
