@@ -9,13 +9,10 @@ import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
-import com.jinmlee.articleProject.queryDsl.ArticleRepositoryImpl;
 import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
-import com.jinmlee.articleProject.service.article.ArticleService;
-import com.mysql.cj.protocol.a.NativeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +26,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -323,8 +319,8 @@ class ArticleApiControllerTest {
                 .build());
 
         articleLikeRepository.save(ArticleLike.builder()
-                .member(loggedMember)
-                .article(article).build());
+                .memberId(loggedMember.getId())
+                .articleId(article.getId()).build());
 
         //when
 

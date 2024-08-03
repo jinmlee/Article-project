@@ -3,8 +3,7 @@ package com.jinmlee.articleProject.repository.article;
 import com.jinmlee.articleProject.dto.article.ArticleViewDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.entity.article.Article;
-import com.jinmlee.articleProject.queryDsl.ArticleRepositoryCustom;
-import lombok.NonNull;
+import com.jinmlee.articleProject.queryDsl.article.ArticleRepositoryCustom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {

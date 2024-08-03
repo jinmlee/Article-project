@@ -5,9 +5,11 @@ import com.jinmlee.articleProject.dto.article.ArticlePageDto;
 import com.jinmlee.articleProject.dto.article.ArticleViewListDto;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.entity.article.Article;
+import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.handler.ResourceNotFoundException;
+import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
 import com.jinmlee.articleProject.service.article.ArticleService;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,7 +46,7 @@ class ArticleServiceTest {
     private ArticleRepository articleRepository;
 
     @Mock
-    private MemberRepository memberRepository;
+    ArticleLikeRepository articleLikeRepository;
 
     @Mock
     private RedisTemplate<String, Object> redisTemplate;
@@ -218,5 +221,48 @@ class ArticleServiceTest {
         assertThat(exception.getMessage()).isEqualTo("Article not found with id: " + articleId);
 
         verify(articleRepository, times(1)).findById(articleId);
+    }
+
+    @Test
+    @DisplayName("게시글 좋아요 누르는 기능 테스트")
+    void addLike(){
+        //given
+        Member member = Member.builder()
+                .id(1L).build();
+
+        Article article = Article.builder()
+                .id(1L)
+                .build();
+
+        ArticleLike articleLike = ArticleLike.builder()
+                .articleId(article.getId())
+                .memberId(member.getId()).build();
+
+        when(articleRepository.existsById(any(Long.class))).thenReturn(true);
+
+        //when
+        articleService.addLike(1L, member.getId());
+
+        //then
+        verify(articleLikeRepository, Mockito.times(1)).save(any(ArticleLike.class));
+        verify(articleRepository, Mockito.times(1)).existsById(any(Long.class));
+    }
+
+    @Test
+    @DisplayName("게시글 좋아요 취소 기능 테스트")
+    void deleteLike(){
+        //given
+        Member member = Member.builder()
+                .id(1L).build();
+
+        Article article = Article.builder()
+                .id(1L).build();
+        //when
+
+        articleService.deleteLike(article.getId(), member.getId());
+
+        //then
+
+        verify(articleLikeRepository, Mockito.times(1)).deleteByArticleIdAndMember(article.getId(), member.getId());
     }
 }
