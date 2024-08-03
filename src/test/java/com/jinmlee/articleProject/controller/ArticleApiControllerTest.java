@@ -9,10 +9,13 @@ import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
 import com.jinmlee.articleProject.enums.Role;
+import com.jinmlee.articleProject.queryDsl.ArticleRepositoryImpl;
 import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberInfoRepository;
 import com.jinmlee.articleProject.repository.MemberRepository;
+import com.jinmlee.articleProject.service.article.ArticleService;
+import com.mysql.cj.protocol.a.NativeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +29,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -166,6 +171,7 @@ class ArticleApiControllerTest {
         Article savedArticle = articleRepository.save(Article.builder()
                 .content(content)
                 .title(title)
+                .hits(0)
                 .member(loggedMember)
                 .build());
 
@@ -176,6 +182,33 @@ class ArticleApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(title))
                 .andExpect(jsonPath("$.content").value(content));
+    }
+
+    @DisplayName("게시글 삭제 기능 테스트")
+    @Test
+    void deleteArticle() throws Exception {
+
+        final String url = "/api/articles/{id}";
+
+        List<Member> finaMember = memberRepository.findAll();
+        Member loggenMember = finaMember.get(0);
+        CustomUserDetails customUserDetails = new CustomUserDetails(loggenMember);
+
+        Article savedArticle = articleRepository.save(Article.builder()
+                .member(loggenMember)
+                .title("title")
+                .content("content")
+                .hits(0)
+                .build());
+
+        ResultActions resultActions = mockMvc.perform(delete(url, savedArticle.getId())
+                .with(user(customUserDetails)));
+
+        Optional<Article> findArticle = articleRepository.findArticleById(savedArticle.getId());
+
+        resultActions
+                .andExpect(status().isOk());
+        assertThat(findArticle).isEmpty();
     }
 
     @DisplayName("게시글 업데이트 기능 성공 테스트")
@@ -271,7 +304,7 @@ class ArticleApiControllerTest {
     }
 
 
-    @DisplayName("게시글 삭제 기능 테스트")
+    @DisplayName("게시글 좋아요 취소 기능 테스트")
     @Test
     void deleteLike() throws Exception {
         //given

@@ -51,7 +51,9 @@ public class ArticleService {
     }
 
     public Article getById(long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found article: " + id));
+
+        return articleRepository.findArticleById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("not found article : " + id));
     }
 
     public ArticleViewDto getViewArticle(long id){
