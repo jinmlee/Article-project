@@ -2,9 +2,11 @@ package com.jinmlee.articleProject.service.article;
 
 import com.jinmlee.articleProject.dto.article.*;
 import com.jinmlee.articleProject.entity.article.Article;
+import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.handler.ResourceNotFoundException;
+import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.util.PageCalculator;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final ArticleLikeRepository articleLikeRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public Article save(AddArticleDto addArticleDto, Member member) {
@@ -120,5 +123,25 @@ public class ArticleService {
         article.update(updateArticleDto.getTitle(), updateArticleDto.getContent());
 
         return article;
+    }
+
+    public boolean existsLike(long articleId, long memberId){
+        return articleLikeRepository.existsByArticleIdAndMember(articleId, memberId);
+    }
+
+    public void addLike(long articleId, long memberId){
+
+        if(!articleRepository.existsById(articleId)){
+            throw new ResourceNotFoundException("not found article id: " + articleId);
+        }
+
+        articleLikeRepository.save(ArticleLike.builder()
+                .articleId(articleId)
+                .memberId(memberId).build());
+    }
+
+    public void deleteLike(long articleId, long memberId){
+
+        articleLikeRepository.deleteByArticleIdAndMember(articleId, memberId);
     }
 }

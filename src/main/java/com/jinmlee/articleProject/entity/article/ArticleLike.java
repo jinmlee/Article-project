@@ -16,6 +16,10 @@ import lombok.NoArgsConstructor;
         name = "article_like",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"member_id", "article_id"})
+        },
+        indexes = {
+                @Index(name = "idx_member_article", columnList = "member_id, article_id"),
+                @Index(name = "idx_article", columnList = "article_id")
         }
 )
 public class ArticleLike {
@@ -25,11 +29,9 @@ public class ArticleLike {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", nullable = false)
-    private Article article;
+    @Column(name = "article_id", nullable = false)
+    private Long articleId;
 }

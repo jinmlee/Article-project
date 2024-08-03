@@ -1,4 +1,4 @@
-package com.jinmlee.articleProject.queryDsl;
+package com.jinmlee.articleProject.queryDsl.article;
 
 import com.jinmlee.articleProject.entity.article.Article;
 

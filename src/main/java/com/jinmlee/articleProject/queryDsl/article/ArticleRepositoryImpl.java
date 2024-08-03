@@ -1,7 +1,7 @@
-package com.jinmlee.articleProject.queryDsl;
+package com.jinmlee.articleProject.queryDsl.article;
 
 import com.jinmlee.articleProject.entity.article.Article;
-import com.jinmlee.articleProject.entity.article.QArticle;
+import com.jinmlee.articleProject.queryDsl.article.ArticleRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -18,36 +17,24 @@ public class QArticleLike extends EntityPathBase<ArticleLike> {
 
     private static final long serialVersionUID = -1426423160L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QArticleLike articleLike = new QArticleLike("articleLike");
 
-    public final QArticle article;
+    public final NumberPath<Long> articleId = createNumber("articleId", Long.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final com.jinmlee.articleProject.entity.member.QMember member;
+    public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
 
     public QArticleLike(String variable) {
-        this(ArticleLike.class, forVariable(variable), INITS);
+        super(ArticleLike.class, forVariable(variable));
     }
 
     public QArticleLike(Path<? extends ArticleLike> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QArticleLike(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QArticleLike(PathMetadata metadata, PathInits inits) {
-        this(ArticleLike.class, metadata, inits);
-    }
-
-    public QArticleLike(Class<? extends ArticleLike> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.article = inits.isInitialized("article") ? new QArticle(forProperty("article"), inits.get("article")) : null;
-        this.member = inits.isInitialized("member") ? new com.jinmlee.articleProject.entity.member.QMember(forProperty("member")) : null;
+        super(ArticleLike.class, metadata);
     }
 
 }

@@ -71,4 +71,16 @@ public class ArticleApiController {
 
         return ResponseEntity.ok().body(new ArticleResponse(article));
     }
+
+    @PostMapping("/api/article/{id}/like")
+    public ResponseEntity<String> addLike(@PathVariable long id, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        if(articleService.existsLike(id, customUserDetails.getMember().getId())){
+            articleService.deleteLike(id, customUserDetails.getMember().getId());
+        }else {
+            articleService.addLike(id, customUserDetails.getMember().getId());
+        }
+
+        return ResponseEntity.ok().body("");
+    }
 }
