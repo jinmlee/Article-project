@@ -6,6 +6,7 @@ import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.comment.Comment;
+import com.jinmlee.articleProject.enums.Department;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.CommentRepository;
@@ -82,6 +83,7 @@ class CommentApiControllerTest {
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
                 .role(Role.USER)
+                .department(Department.BACKEND)
                 .build());
 
         Article savedArticle = articleRepository.save(Article.builder()

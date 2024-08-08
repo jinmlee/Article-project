@@ -5,6 +5,7 @@ import com.jinmlee.articleProject.dto.member.AddMemberDto;
 import com.jinmlee.articleProject.dto.member.LoginMemberDto;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
+import com.jinmlee.articleProject.enums.Department;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
 import com.jinmlee.articleProject.repository.MemberInfoRepository;
@@ -78,7 +79,7 @@ class MemberApiControllerTest {
     })
     public void addMember(String name, String loginId, String password, String phoneNumber, String email) throws Exception {
         final String url = "/api/members";
-        AddMemberDto addMemberDto = new AddMemberDto(loginId, password, name, phoneNumber, email, Role.USER, null);
+        AddMemberDto addMemberDto = new AddMemberDto(loginId, password, name, phoneNumber, email, Role.USER, null, Department.BACKEND);
 
         final String requestMember = objectMapper.writeValueAsString(addMemberDto);
 
@@ -110,6 +111,7 @@ class MemberApiControllerTest {
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
                 .role(Role.USER)
+                .department(Department.BACKEND)
                 .build());
 
         // When

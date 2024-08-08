@@ -2,6 +2,7 @@ package com.jinmlee.articleProject.dto.member;
 
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
+import com.jinmlee.articleProject.enums.Department;
 import com.jinmlee.articleProject.enums.Role;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
@@ -44,11 +45,15 @@ public class AddMemberDto {
     @Nullable
     private String adminCode;
 
+    @Setter
+    private Department department;
+
     public Member toEntityMember(BCryptPasswordEncoder bc) {
         return Member.builder()
                 .loginId(loginId)
                 .password(bc.encode(password))
                 .role(role)
+                .department(department)
                 .build();
     }
 
