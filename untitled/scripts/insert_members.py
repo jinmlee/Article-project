@@ -44,3 +44,30 @@ def bulk_add_members(count):
 
 # 10,000명의 회원 정보를 추가
 bulk_add_members(100)
+def add_admin_member():
+    url = "http://localhost:8081/api/members"
+    role = "ADMIN"
+    login_id = "adminId"
+    password = "Test12345!@"
+
+    data = {
+        "loginId": login_id,
+        "password": password,
+        "name": f"{role} User",
+        "phoneNumber": random_phone_number(),
+        "email": random_email(),
+        "adminCode": "admin_code",
+        "role": role
+    }
+
+    response = requests.post(url, json=data)
+    if response.status_code == 201:
+        print(f"{role} member added successfully")
+    else:
+        print(f"Failed to add {role} member: {response.status_code} {response.text}")
+
+# 관리자 계정 추가 실행
+add_admin_member()
+
+
+

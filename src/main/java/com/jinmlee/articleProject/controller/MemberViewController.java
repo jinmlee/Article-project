@@ -17,4 +17,19 @@ public class MemberViewController {
     public String login() {
         return "member/login";
     }
+
+    @GetMapping("/admin")
+    public String admin(){
+        return "member/admin";
+    }
+
+    @GetMapping("/manager")
+    public String manager(){
+        return "member/manager";
+    }
+
+    @GetMapping("/user")
+    public String user(){
+        return "member/user";
+    }
 }
