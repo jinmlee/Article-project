@@ -19,6 +19,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
+    public final EnumPath<com.jinmlee.articleProject.enums.Department> department = createEnum("department", com.jinmlee.articleProject.enums.Department.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath loginId = createString("loginId");

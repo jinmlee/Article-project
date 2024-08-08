@@ -1,5 +1,6 @@
 package com.jinmlee.articleProject.entity.member;
 
+import com.jinmlee.articleProject.enums.Department;
 import com.jinmlee.articleProject.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,4 +25,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "department", nullable = false)
+    private Department department;
 }

@@ -6,11 +6,13 @@ import com.jinmlee.articleProject.dto.article.ArticleResponse;
 import com.jinmlee.articleProject.dto.article.UpdateArticleDto;
 import com.jinmlee.articleProject.dto.member.CustomUserDetails;
 import com.jinmlee.articleProject.entity.article.Article;
+import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.enums.ArticleSortType;
 import com.jinmlee.articleProject.service.article.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,5 +84,12 @@ public class ArticleApiController {
         }
 
         return ResponseEntity.ok().body("");
+    }
+
+    @PreAuthorize("hasRole('ADMIN') and @checker.validDepartmentFrontend(#customUserDetails)")
+    @GetMapping("/front-only")
+    public ResponseEntity<String> frontPage(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        return ResponseEntity.ok().body("여기는 프론트 페이지 입니다.");
     }
 }

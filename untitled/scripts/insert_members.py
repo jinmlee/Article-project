@@ -32,6 +32,7 @@ def bulk_add_members(count):
             "password": password,
             "name": name,
             "phoneNumber": phone_number,
+            "department": "FRONTEND",
             "email": email,
             "role": role
         }
@@ -57,6 +58,7 @@ def add_admin_member():
         "phoneNumber": random_phone_number(),
         "email": random_email(),
         "adminCode": "admin_code",
+        "department": "FRONTEND",
         "role": role
     }
 
@@ -68,6 +70,31 @@ def add_admin_member():
 
 # 관리자 계정 추가 실행
 add_admin_member()
+
+def add_user_member():
+    url = "http://localhost:8081/api/members"
+    role = "USER"
+    login_id = "userId"
+    password = "Test12345!@"
+
+    data = {
+        "loginId": login_id,
+        "password": password,
+        "name": f"{role} User",
+        "phoneNumber": random_phone_number(),
+        "email": random_email(),
+        "department": "FRONTEND",
+        "role": role
+    }
+
+    response = requests.post(url, json=data)
+    if response.status_code == 201:
+        print(f"{role} member added successfully")
+    else:
+        print(f"Failed to add {role} member: {response.status_code} {response.text}")
+
+# 관리자 계정 추가 실행
+add_user_member()
 
 
 

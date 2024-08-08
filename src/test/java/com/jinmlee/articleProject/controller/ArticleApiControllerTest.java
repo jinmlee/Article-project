@@ -9,6 +9,7 @@ import com.jinmlee.articleProject.entity.article.Article;
 import com.jinmlee.articleProject.entity.article.ArticleLike;
 import com.jinmlee.articleProject.entity.member.Member;
 import com.jinmlee.articleProject.entity.member.MemberInfo;
+import com.jinmlee.articleProject.enums.Department;
 import com.jinmlee.articleProject.enums.Role;
 import com.jinmlee.articleProject.repository.article.ArticleLikeRepository;
 import com.jinmlee.articleProject.repository.article.ArticleRepository;
@@ -77,6 +78,7 @@ class ArticleApiControllerTest {
                 .loginId("test1")
                 .password(bCryptPasswordEncoder.encode("Test12345!@"))
                 .role(Role.USER)
+                .department(Department.BACKEND)
                 .build());
 
         MemberInfo savedMemberInfo = memberInfoRepository.save(MemberInfo.builder()
@@ -310,7 +312,9 @@ class ArticleApiControllerTest {
         Member member2 = memberRepository.save(Member.builder()
                 .loginId("test2")
                 .password(bCryptPasswordEncoder.encode("test2"))
-                .role(Role.USER).build());
+                .role(Role.USER)
+                .department(Department.BACKEND)
+                .build());
 
         Article article = articleRepository.save(Article.builder()
                 .id(1L)
